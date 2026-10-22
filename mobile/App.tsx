@@ -109,18 +109,24 @@ export default function App() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
+    width: '100%',
     backgroundColor: '#05070E',
   },
   mainContainer: {
     flex: 1,
+    width: '100%',
     backgroundColor: '#05070E',
   },
   authContainer: {
     flex: 1,
+    width: '100%',
     backgroundColor: '#05070E',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   centerContainer: {
     flex: 1,
+    width: '100%',
     backgroundColor: '#05070E',
     justifyContent: 'center',
     alignItems: 'center',

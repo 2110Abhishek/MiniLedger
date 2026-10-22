@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, useWindowDimensions } from 'react-native';
 import { Summary } from '../types';
 import { formatINR } from '../services/loans';
 
@@ -9,6 +9,7 @@ interface SummaryCardsProps {
 }
 
 export const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
+  const { width } = useWindowDimensions();
   const totalLent = summary ? formatINR(summary.totalLent) : '₹0.00';
   const totalRepaid = summary ? formatINR(summary.totalRepaid) : '₹0.00';
   const outstandingAmount = summary ? formatINR(summary.outstandingAmount) : '₹0.00';
@@ -16,10 +17,19 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
 
   const hasOverdue = summary ? parseFloat(summary.overdueAmount) > 0 : false;
 
+  // Responsive layout: 4 columns on desktop/wide tablet, 2 columns on normal mobile/tablet, 1 on tiny screens
+  const getCardBasis = () => {
+    if (width >= 860) return '23.5%';
+    if (width >= 400) return '48%';
+    return '100%';
+  };
+
+  const cardStyle = { flexBasis: getCardBasis() as any };
+
   return (
     <View style={styles.grid}>
       {/* 1. Total Lent (Electric Blue theme) */}
-      <View style={[styles.card, styles.cardLent]}>
+      <View style={[styles.card, styles.cardLent, cardStyle]}>
         <View style={styles.cardHeader}>
           <Text style={styles.cardLabel}>Total Lent</Text>
           <View style={styles.pillLent}>
@@ -31,7 +41,7 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
       </View>
 
       {/* 2. Total Repaid (Cyan / Mint theme) */}
-      <View style={[styles.card, styles.cardRepaid]}>
+      <View style={[styles.card, styles.cardRepaid, cardStyle]}>
         <View style={styles.cardHeader}>
           <Text style={styles.cardLabel}>Total Repaid</Text>
           <View style={styles.pillRepaid}>
@@ -43,7 +53,7 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
       </View>
 
       {/* 3. Outstanding Amount (Vibrant Sky Blue theme) */}
-      <View style={[styles.card, styles.cardOutstanding]}>
+      <View style={[styles.card, styles.cardOutstanding, cardStyle]}>
         <View style={styles.cardHeader}>
           <Text style={styles.cardLabel}>Outstanding</Text>
           <View style={styles.pillOutstanding}>
@@ -59,6 +69,7 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
         style={[
           styles.card,
           styles.cardOverdue,
+          cardStyle,
           hasOverdue && styles.cardOverdueNeonActive,
         ]}
       >
@@ -91,7 +102,7 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
           {overdueAmount}
         </Text>
         <Text style={[styles.cardSub, hasOverdue && styles.cardSubNeon]}>
-          {hasOverdue ? 'Action needed: Due date passed' : 'No past-due payments'}
+          {hasOverdue ? 'Action needed: Past due' : 'No past-due payments'}
         </Text>
       </View>
     </View>
@@ -104,9 +115,9 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     gap: 12,
     marginVertical: 16,
+    width: '100%',
   },
   card: {
-    flexBasis: '47.8%',
     flexGrow: 1,
     borderRadius: 18,
     padding: 16,
@@ -134,7 +145,7 @@ const styles = StyleSheet.create({
     color: '#FF6B8B',
   },
   cardValue: {
-    fontSize: 23,
+    fontSize: 22,
     fontWeight: '900',
     color: '#F8FAFC',
     marginVertical: 2,
@@ -179,7 +190,7 @@ const styles = StyleSheet.create({
     fontWeight: '800',
   },
 
-  // 2. Repaid Card (Cyan / Emerald)
+  // 2. Repaid Card (Cyan / Mint)
   cardRepaid: {
     backgroundColor: '#061A1D',
     borderColor: '#0E444B',

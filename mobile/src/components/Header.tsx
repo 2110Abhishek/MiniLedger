@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, useWindowDimensions } from 'react-native';
 import { User } from '../types';
 
 interface HeaderProps {
@@ -8,51 +8,66 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
-  return (
-    <View style={styles.container}>
-      <View style={styles.brandContainer}>
-        <View style={styles.logoBadge}>
-          <Text style={styles.logoIcon}>₹</Text>
-        </View>
-        <View>
-          <Text style={styles.brandTitle}>
-            Mini<Text style={styles.brandHighlight}>Ledger</Text>
-          </Text>
-          <Text style={styles.brandSubtitle}>Personal Lending Tracker</Text>
-        </View>
-      </View>
+  const { width } = useWindowDimensions();
+  const isSmall = width < 480;
 
-      {user && (
-        <View style={styles.userContainer}>
-          <View style={styles.phoneBadge}>
-            <Text style={styles.phoneIcon}>📱</Text>
-            <Text style={styles.phoneText}>{user.phoneNumber}</Text>
+  return (
+    <View style={styles.outerContainer}>
+      <View style={styles.innerContainer}>
+        <View style={styles.brandContainer}>
+          <View style={styles.logoBadge}>
+            <Text style={styles.logoIcon}>₹</Text>
           </View>
-          <TouchableOpacity
-            style={styles.logoutButton}
-            onPress={onLogout}
-            accessibilityLabel="Sign out"
-            accessibilityRole="button"
-          >
-            <Text style={styles.logoutText}>Logout</Text>
-          </TouchableOpacity>
+          <View>
+            <Text style={styles.brandTitle}>
+              Mini<Text style={styles.brandHighlight}>Ledger</Text>
+            </Text>
+            {!isSmall && (
+              <Text style={styles.brandSubtitle}>Personal Lending Tracker</Text>
+            )}
+          </View>
         </View>
-      )}
+
+        {user && (
+          <View style={styles.userContainer}>
+            <View style={styles.phoneBadge}>
+              <Text style={styles.phoneIcon}>📱</Text>
+              <Text style={styles.phoneText}>
+                {isSmall ? user.phoneNumber.slice(-4) : user.phoneNumber}
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={styles.logoutButton}
+              onPress={onLogout}
+              accessibilityLabel="Sign out"
+              accessibilityRole="button"
+            >
+              <Text style={styles.logoutText}>Logout</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  outerContainer: {
+    width: '100%',
     backgroundColor: '#070B18',
+    borderBottomWidth: 1,
+    borderBottomColor: '#1A233D',
+    alignItems: 'center',
+    paddingTop: 16,
+    paddingBottom: 16,
+  },
+  innerContainer: {
+    width: '100%',
+    maxWidth: 1080,
     paddingHorizontal: 20,
-    paddingTop: 46,
-    paddingBottom: 18,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderBottomWidth: 1,
-    borderBottomColor: '#1A233D',
   },
   brandContainer: {
     flexDirection: 'row',

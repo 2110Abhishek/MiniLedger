@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
+  useWindowDimensions,
 } from 'react-native';
 import { User, Loan, Summary, LoanStatus } from '../types';
 import { getSummary, getLoans, repayLoan } from '../services/loans';
@@ -21,6 +22,10 @@ interface DashboardScreenProps {
 }
 
 export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAddLoan }) => {
+  const { width } = useWindowDimensions();
+  const isCompact = width < 520;
+  const isWide = width >= 768;
+
   const [summary, setSummary] = useState<Summary | null>(null);
   const [loans, setLoans] = useState<Loan[]>([]);
   const [filter, setFilter] = useState<'all' | LoanStatus>('all');
@@ -77,6 +82,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAd
   return (
     <View style={styles.container}>
       <ScrollView
+        style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         refreshControl={
           <RefreshControl
@@ -86,143 +92,146 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAd
           />
         }
       >
-        {/* Top Greeting & Action Banner */}
-        <View style={styles.topBanner}>
-          <View>
-            <Text style={styles.greetingTitle}>Lending Overview</Text>
-            <Text style={styles.greetingSubtitle}>
-              Monitor active balances, settled loans & past-due amounts
-            </Text>
-          </View>
-          <TouchableOpacity
-            style={styles.addLoanButton}
-            onPress={onOpenAddLoan}
-            accessibilityRole="button"
-            accessibilityLabel="Add new loan entry"
-          >
-            <Text style={styles.addLoanButtonText}>+ Add Loan</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Error Alert with Retry */}
-        {error && (
-          <View style={styles.errorBanner}>
-            <Text style={styles.errorBannerText}>⚠️ {error}</Text>
-            <TouchableOpacity onPress={() => loadData()}>
-              <Text style={styles.retryText}>Retry</Text>
+        <View style={styles.contentWrapper}>
+          {/* Top Greeting & Action Banner (Responsive Flex) */}
+          <View style={[styles.topBanner, isCompact && styles.topBannerCompact]}>
+            <View style={styles.titleArea}>
+              <Text style={styles.greetingTitle}>Lending Overview</Text>
+              <Text style={styles.greetingSubtitle}>
+                Monitor active balances, settled loans & past-due amounts
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={[styles.addLoanButton, isCompact && styles.addLoanButtonFull]}
+              onPress={onOpenAddLoan}
+              accessibilityRole="button"
+              accessibilityLabel="Add new loan entry"
+            >
+              <Text style={styles.addLoanButtonText}>+ Add Loan</Text>
             </TouchableOpacity>
           </View>
-        )}
 
-        {/* Summary Cards */}
-        <SummaryCards summary={summary} loading={loading} />
-
-        {/* Filter Tabs */}
-        <View style={styles.filterRow}>
-          <TouchableOpacity
-            style={[styles.filterPill, filter === 'all' && styles.filterPillActiveAll]}
-            onPress={() => setFilter('all')}
-          >
-            <Text style={[styles.filterPillText, filter === 'all' && styles.filterPillTextActive]}>
-              All Loans
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.filterPill, filter === 'outstanding' && styles.filterPillActiveOutstanding]}
-            onPress={() => setFilter('outstanding')}
-          >
-            <Text
-              style={[
-                styles.filterPillText,
-                filter === 'outstanding' && styles.filterPillTextActive,
-              ]}
-            >
-              Outstanding
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.filterPill,
-              filter === 'overdue' && styles.filterPillActiveNeonOverdue,
-            ]}
-            onPress={() => setFilter('overdue')}
-          >
-            <Text
-              style={[
-                styles.filterPillText,
-                filter === 'overdue' && styles.filterPillTextActiveNeon,
-              ]}
-            >
-              ⚠️ Overdue
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.filterPill,
-              filter === 'repaid' && styles.filterPillActiveRepaid,
-            ]}
-            onPress={() => setFilter('repaid')}
-          >
-            <Text
-              style={[
-                styles.filterPillText,
-                filter === 'repaid' && styles.filterPillTextActiveRepaid,
-              ]}
-            >
-              ✓ Repaid
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Loading Indicator */}
-        {loading && !refreshing && (
-          <View style={styles.centerBox}>
-            <ActivityIndicator size="large" color="#00D2FF" />
-            <Text style={styles.loadingText}>Fetching financial records...</Text>
-          </View>
-        )}
-
-        {/* Loans List */}
-        {!loading && loans.length > 0 && (
-          <View style={styles.loansList}>
-            {loans.map((loan) => (
-              <LoanCard
-                key={loan.id}
-                loan={loan}
-                onRepay={(target) => setSelectedRepayLoan(target)}
-                onViewReceipt={(url, target) => setPreviewReceipt({ url, loan: target })}
-              />
-            ))}
-          </View>
-        )}
-
-        {/* Empty State */}
-        {!loading && loans.length === 0 && (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyIcon}>💳</Text>
-            <Text style={styles.emptyTitle}>
-              {filter === 'all'
-                ? 'No loans recorded yet'
-                : `No ${filter} loans found`}
-            </Text>
-            <Text style={styles.emptyText}>
-              {filter === 'all'
-                ? 'Keep accurate records of money lent to friends and track repayments seamlessly.'
-                : `There are currently no loans under the "${filter}" filter.`}
-            </Text>
-            {filter === 'all' && (
-              <TouchableOpacity
-                style={styles.emptyButton}
-                onPress={onOpenAddLoan}
-              >
-                <Text style={styles.emptyButtonText}>+ Record First Loan</Text>
+          {/* Error Alert with Retry */}
+          {error && (
+            <View style={styles.errorBanner}>
+              <Text style={styles.errorBannerText}>⚠️ {error}</Text>
+              <TouchableOpacity onPress={() => loadData()}>
+                <Text style={styles.retryText}>Retry</Text>
               </TouchableOpacity>
-            )}
+            </View>
+          )}
+
+          {/* Summary Cards */}
+          <SummaryCards summary={summary} loading={loading} />
+
+          {/* Filter Tabs */}
+          <View style={styles.filterRow}>
+            <TouchableOpacity
+              style={[styles.filterPill, filter === 'all' && styles.filterPillActiveAll]}
+              onPress={() => setFilter('all')}
+            >
+              <Text style={[styles.filterPillText, filter === 'all' && styles.filterPillTextActive]}>
+                All Loans
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.filterPill, filter === 'outstanding' && styles.filterPillActiveOutstanding]}
+              onPress={() => setFilter('outstanding')}
+            >
+              <Text
+                style={[
+                  styles.filterPillText,
+                  filter === 'outstanding' && styles.filterPillTextActive,
+                ]}
+              >
+                Outstanding
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.filterPill,
+                filter === 'overdue' && styles.filterPillActiveNeonOverdue,
+              ]}
+              onPress={() => setFilter('overdue')}
+            >
+              <Text
+                style={[
+                  styles.filterPillText,
+                  filter === 'overdue' && styles.filterPillTextActiveNeon,
+                ]}
+              >
+                ⚠️ Overdue
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[
+                styles.filterPill,
+                filter === 'repaid' && styles.filterPillActiveRepaid,
+              ]}
+              onPress={() => setFilter('repaid')}
+            >
+              <Text
+                style={[
+                  styles.filterPillText,
+                  filter === 'repaid' && styles.filterPillTextActiveRepaid,
+                ]}
+              >
+                ✓ Repaid
+              </Text>
+            </TouchableOpacity>
           </View>
-        )}
+
+          {/* Loading Indicator */}
+          {loading && !refreshing && (
+            <View style={styles.centerBox}>
+              <ActivityIndicator size="large" color="#00D2FF" />
+              <Text style={styles.loadingText}>Fetching financial records...</Text>
+            </View>
+          )}
+
+          {/* Loans List (Responsive grid on tablet/desktop) */}
+          {!loading && loans.length > 0 && (
+            <View style={[styles.loansList, isWide && styles.loansListGrid]}>
+              {loans.map((loan) => (
+                <View key={loan.id} style={isWide ? styles.loanGridItem : styles.loanItem}>
+                  <LoanCard
+                    loan={loan}
+                    onRepay={(target) => setSelectedRepayLoan(target)}
+                    onViewReceipt={(url, target) => setPreviewReceipt({ url, loan: target })}
+                  />
+                </View>
+              ))}
+            </View>
+          )}
+
+          {/* Empty State */}
+          {!loading && loans.length === 0 && (
+            <View style={styles.emptyState}>
+              <Text style={styles.emptyIcon}>💳</Text>
+              <Text style={styles.emptyTitle}>
+                {filter === 'all'
+                  ? 'No loans recorded yet'
+                  : `No ${filter} loans found`}
+              </Text>
+              <Text style={styles.emptyText}>
+                {filter === 'all'
+                  ? 'Keep accurate records of money lent to friends and track repayments seamlessly.'
+                  : `There are currently no loans under the "${filter}" filter.`}
+              </Text>
+              {filter === 'all' && (
+                <TouchableOpacity
+                  style={styles.emptyButton}
+                  onPress={onOpenAddLoan}
+                >
+                  <Text style={styles.emptyButtonText}>+ Record First Loan</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          )}
+        </View>
       </ScrollView>
 
       {/* Confirmation Modal */}
@@ -248,22 +257,45 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAd
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
     backgroundColor: '#05070E',
   },
+  scrollView: {
+    flex: 1,
+    width: '100%',
+  },
   scrollContent: {
-    padding: 16,
-    paddingBottom: 40,
+    flexGrow: 1,
+    width: '100%',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 48,
+  },
+  contentWrapper: {
+    width: '100%',
+    maxWidth: 1080,
   },
   topBanner: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 4,
-    marginTop: 6,
+    marginBottom: 8,
+    marginTop: 4,
+    width: '100%',
+    gap: 16,
+  },
+  topBannerCompact: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    gap: 12,
+  },
+  titleArea: {
+    flex: 1,
   },
   greetingTitle: {
     color: '#F8FAFC',
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '900',
     letterSpacing: -0.5,
   },
@@ -274,8 +306,8 @@ const styles = StyleSheet.create({
   },
   addLoanButton: {
     backgroundColor: '#0066FF',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 11,
     borderRadius: 12,
     shadowColor: '#0066FF',
     shadowOffset: { width: 0, height: 4 },
@@ -284,6 +316,11 @@ const styles = StyleSheet.create({
     elevation: 5,
     borderWidth: 1,
     borderColor: '#38BDF8',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addLoanButtonFull: {
+    width: '100%',
   },
   addLoanButtonText: {
     color: '#FFFFFF',
@@ -304,6 +341,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,
     shadowRadius: 8,
+    width: '100%',
   },
   errorBannerText: {
     color: '#FF6B8B',
@@ -322,6 +360,7 @@ const styles = StyleSheet.create({
     gap: 8,
     marginVertical: 14,
     flexWrap: 'wrap',
+    width: '100%',
   },
   filterPill: {
     backgroundColor: '#0A1022',
@@ -377,12 +416,25 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   loansList: {
-    marginTop: 4,
+    marginTop: 6,
+    width: '100%',
+  },
+  loansListGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 14,
+  },
+  loanItem: {
+    width: '100%',
+  },
+  loanGridItem: {
+    width: '49%',
   },
   centerBox: {
     padding: 40,
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%',
   },
   loadingText: {
     color: '#00D2FF',
@@ -398,6 +450,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.2,
     borderColor: '#182444',
     marginTop: 12,
+    width: '100%',
   },
   emptyIcon: {
     fontSize: 44,
@@ -415,7 +468,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: 20,
-    maxWidth: 320,
+    maxWidth: 340,
   },
   emptyButton: {
     backgroundColor: '#0066FF',
