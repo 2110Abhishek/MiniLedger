@@ -8,7 +8,7 @@ interface SummaryCardsProps {
   loading?: boolean;
 }
 
-export const SummaryCards: React.FC<SummaryCardsProps> = ({ summary, loading }) => {
+export const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
   const totalLent = summary ? formatINR(summary.totalLent) : '₹0.00';
   const totalRepaid = summary ? formatINR(summary.totalRepaid) : '₹0.00';
   const outstandingAmount = summary ? formatINR(summary.outstandingAmount) : '₹0.00';
@@ -18,82 +18,80 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ summary, loading }) 
 
   return (
     <View style={styles.grid}>
-      {/* Total Lent */}
+      {/* 1. Total Lent (Electric Blue theme) */}
       <View style={[styles.card, styles.cardLent]}>
         <View style={styles.cardHeader}>
           <Text style={styles.cardLabel}>Total Lent</Text>
-          <View style={[styles.pill, styles.pillLent]}>
-            <Text style={styles.pillTextLent}>All Time</Text>
+          <View style={styles.pillLent}>
+            <Text style={styles.pillTextLent}>ALL TIME</Text>
           </View>
         </View>
-        <Text style={styles.cardValue}>{totalLent}</Text>
-        <Text style={styles.cardSub}>Principal sum of all loans</Text>
+        <Text style={[styles.cardValue, styles.valueLent]}>{totalLent}</Text>
+        <Text style={styles.cardSub}>Principal sum of loans</Text>
       </View>
 
-      {/* Total Repaid */}
+      {/* 2. Total Repaid (Cyan / Mint theme) */}
       <View style={[styles.card, styles.cardRepaid]}>
         <View style={styles.cardHeader}>
           <Text style={styles.cardLabel}>Total Repaid</Text>
-          <View style={[styles.pill, styles.pillRepaid]}>
-            <Text style={styles.pillTextRepaid}>Received</Text>
+          <View style={styles.pillRepaid}>
+            <Text style={styles.pillTextRepaid}>RECEIVED</Text>
           </View>
         </View>
         <Text style={[styles.cardValue, styles.valueRepaid]}>{totalRepaid}</Text>
-        <Text style={styles.cardSub}>Fully settled loans</Text>
+        <Text style={styles.cardSub}>Fully settled balances</Text>
       </View>
 
-      {/* Outstanding Amount */}
+      {/* 3. Outstanding Amount (Vibrant Sky Blue theme) */}
       <View style={[styles.card, styles.cardOutstanding]}>
         <View style={styles.cardHeader}>
           <Text style={styles.cardLabel}>Outstanding</Text>
-          <View style={[styles.pill, styles.pillOutstanding]}>
-            <Text style={styles.pillTextOutstanding}>Active</Text>
+          <View style={styles.pillOutstanding}>
+            <Text style={styles.pillTextOutstanding}>ACTIVE</Text>
           </View>
         </View>
         <Text style={[styles.cardValue, styles.valueOutstanding]}>{outstandingAmount}</Text>
-        <Text style={styles.cardSub}>Remaining balance</Text>
+        <Text style={styles.cardSub}>Unsettled remaining</Text>
       </View>
 
-      {/* Overdue Amount (Highlighted with accessible warning treatment) */}
+      {/* 4. Overdue Amount (Vibrant Glowing NEON RED theme) */}
       <View
         style={[
           styles.card,
           styles.cardOverdue,
-          hasOverdue && styles.cardOverdueActive,
+          hasOverdue && styles.cardOverdueNeonActive,
         ]}
       >
         <View style={styles.cardHeader}>
-          <View style={styles.labelWithIcon}>
-            <Text style={[styles.cardLabel, hasOverdue && styles.cardLabelOverdue]}>
-              Overdue Amount
-            </Text>
-          </View>
+          <Text style={[styles.cardLabel, hasOverdue && styles.cardLabelNeon]}>
+            Overdue Amount
+          </Text>
           <View
             style={[
               styles.pill,
-              hasOverdue ? styles.pillOverdueActive : styles.pillOverdueInactive,
+              hasOverdue ? styles.pillNeonRedActive : styles.pillNeonRedInactive,
             ]}
           >
             <Text
               style={[
-                styles.pillTextOverdue,
-                hasOverdue ? styles.pillTextOverdueActive : styles.pillTextOverdueInactive,
+                styles.pillText,
+                hasOverdue ? styles.pillTextNeonActive : styles.pillTextNeonInactive,
               ]}
             >
-              {hasOverdue ? '⚠️ ACTION REQ.' : '✓ None'}
+              {hasOverdue ? '⚠️ OVERDUE' : '✓ CLEAR'}
             </Text>
           </View>
         </View>
         <Text
           style={[
             styles.cardValue,
-            hasOverdue ? styles.valueOverdueActive : styles.valueOverdueInactive,
+            hasOverdue ? styles.valueNeonRedActive : styles.valueNeonRedInactive,
           ]}
         >
           {overdueAmount}
         </Text>
-        <Text style={[styles.cardSub, hasOverdue && styles.cardSubOverdue]}>
-          {hasOverdue ? 'Passed repayment date' : 'No overdue loans'}
+        <Text style={[styles.cardSub, hasOverdue && styles.cardSubNeon]}>
+          {hasOverdue ? 'Action needed: Due date passed' : 'No past-due payments'}
         </Text>
       </View>
     </View>
@@ -105,19 +103,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 12,
-    marginVertical: 14,
+    marginVertical: 16,
   },
   card: {
     flexBasis: '47.8%',
     flexGrow: 1,
-    borderRadius: 16,
+    borderRadius: 18,
     padding: 16,
     borderWidth: 1,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   cardHeader: {
     flexDirection: 'row',
@@ -125,22 +123,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 8,
   },
-  labelWithIcon: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
   cardLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#94A3B8',
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#8CA0BA',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
-  cardLabelOverdue: {
-    color: '#FDA4AF',
+  cardLabelNeon: {
+    color: '#FF6B8B',
   },
   cardValue: {
-    fontSize: 22,
-    fontWeight: '800',
+    fontSize: 23,
+    fontWeight: '900',
     color: '#F8FAFC',
     marginVertical: 2,
     letterSpacing: -0.5,
@@ -148,91 +143,129 @@ const styles = StyleSheet.create({
   cardSub: {
     fontSize: 11,
     color: '#64748B',
-    marginTop: 2,
-  },
-  cardSubOverdue: {
-    color: '#FCA5A5',
+    marginTop: 3,
+    fontWeight: '500',
   },
   pill: {
-    paddingHorizontal: 7,
-    paddingVertical: 2,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
     borderRadius: 6,
   },
-  // Lent card
+  pillText: {
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.3,
+  },
+
+  // 1. Lent Card (Electric Blue)
   cardLent: {
-    backgroundColor: '#1E293B',
-    borderColor: '#334155',
+    backgroundColor: '#0A1128',
+    borderColor: '#1E3A8A',
+  },
+  valueLent: {
+    color: '#FFFFFF',
   },
   pillLent: {
-    backgroundColor: '#334155',
+    backgroundColor: '#0066FF20',
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#0066FF60',
   },
   pillTextLent: {
-    color: '#CBD5E1',
+    color: '#38BDF8',
     fontSize: 10,
-    fontWeight: '700',
+    fontWeight: '800',
   },
-  // Repaid card
+
+  // 2. Repaid Card (Cyan / Emerald)
   cardRepaid: {
-    backgroundColor: '#064E3B15',
-    borderColor: '#05966940',
+    backgroundColor: '#061A1D',
+    borderColor: '#0E444B',
   },
   valueRepaid: {
-    color: '#10B981',
+    color: '#00F5A0',
   },
   pillRepaid: {
-    backgroundColor: '#05966925',
+    backgroundColor: '#00F5A020',
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#00F5A060',
   },
   pillTextRepaid: {
-    color: '#34D399',
+    color: '#00F5A0',
     fontSize: 10,
-    fontWeight: '700',
+    fontWeight: '800',
   },
-  // Outstanding card
+
+  // 3. Outstanding Card (Cyber Blue)
   cardOutstanding: {
-    backgroundColor: '#1E293B',
-    borderColor: '#2563EB40',
+    backgroundColor: '#0A1535',
+    borderColor: '#0284C7',
+    borderWidth: 1.2,
   },
   valueOutstanding: {
-    color: '#38BDF8',
+    color: '#00D2FF',
   },
   pillOutstanding: {
-    backgroundColor: '#0284C720',
+    backgroundColor: '#00D2FF20',
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#00D2FF70',
   },
   pillTextOutstanding: {
-    color: '#38BDF8',
+    color: '#00D2FF',
     fontSize: 10,
-    fontWeight: '700',
+    fontWeight: '800',
   },
-  // Overdue card
+
+  // 4. Overdue Card (NEON RED Glowing)
   cardOverdue: {
-    backgroundColor: '#1E293B',
-    borderColor: '#334155',
+    backgroundColor: '#0E111E',
+    borderColor: '#262D4A',
   },
-  cardOverdueActive: {
-    backgroundColor: '#7F1D1D20',
-    borderColor: '#DC2626',
-    borderWidth: 1.5,
+  cardOverdueNeonActive: {
+    backgroundColor: '#1E0A14',
+    borderColor: '#FF1E56',
+    borderWidth: 1.8,
+    shadowColor: '#FF1E56',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.65,
+    shadowRadius: 14,
+    elevation: 8,
   },
-  valueOverdueInactive: {
-    color: '#94A3B8',
+  valueNeonRedInactive: {
+    color: '#8CA0BA',
   },
-  valueOverdueActive: {
-    color: '#EF4444',
+  valueNeonRedActive: {
+    color: '#FF1E56',
+    textShadowColor: '#FF1E5680',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
   },
-  pillOverdueInactive: {
-    backgroundColor: '#334155',
+  pillNeonRedInactive: {
+    backgroundColor: '#1A2238',
   },
-  pillTextOverdue: {
-    fontSize: 10,
-    fontWeight: '700',
+  pillTextNeonInactive: {
+    color: '#64748B',
   },
-  pillTextOverdueInactive: {
-    color: '#94A3B8',
+  pillNeonRedActive: {
+    backgroundColor: '#FF1E56',
+    shadowColor: '#FF1E56',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.6,
+    shadowRadius: 6,
   },
-  pillOverdueActive: {
-    backgroundColor: '#DC2626',
-  },
-  pillTextOverdueActive: {
+  pillTextNeonActive: {
     color: '#FFFFFF',
+  },
+  cardSubNeon: {
+    color: '#FF94AB',
+    fontWeight: '600',
   },
 });

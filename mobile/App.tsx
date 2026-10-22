@@ -109,26 +109,27 @@ export default function App() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#090D16',
+    backgroundColor: '#05070E',
   },
   mainContainer: {
     flex: 1,
-    backgroundColor: '#090D16',
+    backgroundColor: '#05070E',
   },
   authContainer: {
     flex: 1,
-    backgroundColor: '#090D16',
+    backgroundColor: '#05070E',
   },
   centerContainer: {
     flex: 1,
-    backgroundColor: '#090D16',
+    backgroundColor: '#05070E',
     justifyContent: 'center',
     alignItems: 'center',
   },
   loadingText: {
-    color: '#94A3B8',
+    color: '#00D2FF',
     fontSize: 14,
     marginTop: 14,
-    fontWeight: '500',
+    fontWeight: '600',
+    letterSpacing: 0.5,
   },
 });

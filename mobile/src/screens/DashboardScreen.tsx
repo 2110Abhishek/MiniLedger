@@ -66,7 +66,6 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAd
     try {
       await repayLoan(selectedRepayLoan.id);
       setSelectedRepayLoan(null);
-      // Reload both summary and loan list to reflect immediate updates
       await loadData(true);
     } catch (err: any) {
       alert(err.message || 'Failed to mark loan as repaid');
@@ -83,16 +82,16 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAd
           <RefreshControl
             refreshing={refreshing}
             onRefresh={handleRefresh}
-            tintColor="#60A5FA"
+            tintColor="#00D2FF"
           />
         }
       >
         {/* Top Greeting & Action Banner */}
         <View style={styles.topBanner}>
           <View>
-            <Text style={styles.greetingTitle}>Overview</Text>
+            <Text style={styles.greetingTitle}>Lending Overview</Text>
             <Text style={styles.greetingSubtitle}>
-              Keep track of what you lent and what's due
+              Monitor active balances, settled loans & past-due amounts
             </Text>
           </View>
           <TouchableOpacity
@@ -118,24 +117,19 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAd
         {/* Summary Cards */}
         <SummaryCards summary={summary} loading={loading} />
 
-        {/* Loans Section Header & Filter Tabs */}
-        <View style={styles.loansSectionHeader}>
-          <Text style={styles.sectionTitle}>Loan Records</Text>
-        </View>
-
-        {/* Filter Pills */}
+        {/* Filter Tabs */}
         <View style={styles.filterRow}>
           <TouchableOpacity
-            style={[styles.filterPill, filter === 'all' && styles.filterPillActive]}
+            style={[styles.filterPill, filter === 'all' && styles.filterPillActiveAll]}
             onPress={() => setFilter('all')}
           >
             <Text style={[styles.filterPillText, filter === 'all' && styles.filterPillTextActive]}>
-              All
+              All Loans
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.filterPill, filter === 'outstanding' && styles.filterPillActive]}
+            style={[styles.filterPill, filter === 'outstanding' && styles.filterPillActiveOutstanding]}
             onPress={() => setFilter('outstanding')}
           >
             <Text
@@ -151,14 +145,14 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAd
           <TouchableOpacity
             style={[
               styles.filterPill,
-              filter === 'overdue' && styles.filterPillActiveOverdue,
+              filter === 'overdue' && styles.filterPillActiveNeonOverdue,
             ]}
             onPress={() => setFilter('overdue')}
           >
             <Text
               style={[
                 styles.filterPillText,
-                filter === 'overdue' && styles.filterPillTextActiveOverdue,
+                filter === 'overdue' && styles.filterPillTextActiveNeon,
               ]}
             >
               ⚠️ Overdue
@@ -186,8 +180,8 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAd
         {/* Loading Indicator */}
         {loading && !refreshing && (
           <View style={styles.centerBox}>
-            <ActivityIndicator size="large" color="#3B82F6" />
-            <Text style={styles.loadingText}>Loading loans...</Text>
+            <ActivityIndicator size="large" color="#00D2FF" />
+            <Text style={styles.loadingText}>Fetching financial records...</Text>
           </View>
         )}
 
@@ -208,7 +202,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAd
         {/* Empty State */}
         {!loading && loans.length === 0 && (
           <View style={styles.emptyState}>
-            <Text style={styles.emptyIcon}>📝</Text>
+            <Text style={styles.emptyIcon}>💳</Text>
             <Text style={styles.emptyTitle}>
               {filter === 'all'
                 ? 'No loans recorded yet'
@@ -216,22 +210,22 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAd
             </Text>
             <Text style={styles.emptyText}>
               {filter === 'all'
-                ? 'Keep track of money lent to friends and relatives by creating your first entry.'
-                : 'There are no loans matching this filter category.'}
+                ? 'Keep accurate records of money lent to friends and track repayments seamlessly.'
+                : `There are currently no loans under the "${filter}" filter.`}
             </Text>
             {filter === 'all' && (
               <TouchableOpacity
                 style={styles.emptyButton}
                 onPress={onOpenAddLoan}
               >
-                <Text style={styles.emptyButtonText}>+ Create First Loan</Text>
+                <Text style={styles.emptyButtonText}>+ Record First Loan</Text>
               </TouchableOpacity>
             )}
           </View>
         )}
       </ScrollView>
 
-      {/* Confirmation Modal for Marking as Repaid */}
+      {/* Confirmation Modal */}
       <RepayModal
         loan={selectedRepayLoan}
         visible={!!selectedRepayLoan}
@@ -254,7 +248,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAd
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#090D16',
+    backgroundColor: '#05070E',
   },
   scrollContent: {
     padding: 16,
@@ -264,108 +258,123 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
+    marginTop: 6,
   },
   greetingTitle: {
     color: '#F8FAFC',
     fontSize: 22,
-    fontWeight: '800',
+    fontWeight: '900',
     letterSpacing: -0.5,
   },
   greetingSubtitle: {
-    color: '#94A3B8',
+    color: '#8CA0BA',
     fontSize: 13,
-    marginTop: 2,
+    marginTop: 3,
   },
   addLoanButton: {
-    backgroundColor: '#2563EB',
+    backgroundColor: '#0066FF',
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 12,
-    shadowColor: '#2563EB',
+    shadowColor: '#0066FF',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 5,
+    borderWidth: 1,
+    borderColor: '#38BDF8',
   },
   addLoanButtonText: {
     color: '#FFFFFF',
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   errorBanner: {
-    backgroundColor: '#7F1D1D30',
-    borderWidth: 1,
-    borderColor: '#DC2626',
+    backgroundColor: '#2A0815',
+    borderWidth: 1.5,
+    borderColor: '#FF1E56',
     borderRadius: 12,
     padding: 12,
     marginVertical: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    shadowColor: '#FF1E56',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
   },
   errorBannerText: {
-    color: '#F87171',
+    color: '#FF6B8B',
     fontSize: 13,
+    fontWeight: '600',
     flex: 1,
   },
   retryText: {
-    color: '#60A5FA',
+    color: '#00D2FF',
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: '800',
     marginLeft: 12,
-  },
-  loansSectionHeader: {
-    marginTop: 18,
-    marginBottom: 10,
-  },
-  sectionTitle: {
-    color: '#F8FAFC',
-    fontSize: 18,
-    fontWeight: '700',
   },
   filterRow: {
     flexDirection: 'row',
     gap: 8,
-    marginBottom: 16,
+    marginVertical: 14,
     flexWrap: 'wrap',
   },
   filterPill: {
-    backgroundColor: '#1E293B',
+    backgroundColor: '#0A1022',
     paddingHorizontal: 14,
-    paddingVertical: 7,
+    paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#334155',
+    borderColor: '#182444',
   },
-  filterPillActive: {
-    backgroundColor: '#2563EB',
-    borderColor: '#2563EB',
+  filterPillActiveAll: {
+    backgroundColor: '#0066FF',
+    borderColor: '#38BDF8',
+    shadowColor: '#0066FF',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
   },
-  filterPillActiveOverdue: {
-    backgroundColor: '#DC2626',
-    borderColor: '#DC2626',
+  filterPillActiveOutstanding: {
+    backgroundColor: '#0284C7',
+    borderColor: '#00D2FF',
+    shadowColor: '#00D2FF',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
+  },
+  filterPillActiveNeonOverdue: {
+    backgroundColor: '#FF1E56',
+    borderColor: '#FFA8BD',
+    shadowColor: '#FF1E56',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.7,
+    shadowRadius: 8,
   },
   filterPillActiveRepaid: {
-    backgroundColor: '#059669',
-    borderColor: '#059669',
+    backgroundColor: '#00F5A0',
+    borderColor: '#A7F3D0',
   },
   filterPillText: {
-    color: '#94A3B8',
+    color: '#8CA0BA',
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   filterPillTextActive: {
     color: '#FFFFFF',
-    fontWeight: '700',
+    fontWeight: '800',
   },
-  filterPillTextActiveOverdue: {
+  filterPillTextActiveNeon: {
     color: '#FFFFFF',
-    fontWeight: '700',
+    fontWeight: '900',
   },
   filterPillTextActiveRepaid: {
-    color: '#FFFFFF',
-    fontWeight: '700',
+    color: '#052E2B',
+    fontWeight: '900',
   },
   loansList: {
     marginTop: 4,
@@ -376,46 +385,53 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   loadingText: {
-    color: '#94A3B8',
+    color: '#00D2FF',
     fontSize: 14,
     marginTop: 12,
+    fontWeight: '600',
   },
   emptyState: {
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0A1022',
     borderRadius: 20,
-    padding: 32,
+    padding: 36,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#1E293B',
+    borderWidth: 1.2,
+    borderColor: '#182444',
     marginTop: 12,
   },
   emptyIcon: {
-    fontSize: 42,
-    marginBottom: 12,
+    fontSize: 44,
+    marginBottom: 14,
   },
   emptyTitle: {
     color: '#F8FAFC',
-    fontSize: 17,
-    fontWeight: '700',
+    fontSize: 18,
+    fontWeight: '800',
     marginBottom: 6,
   },
   emptyText: {
-    color: '#94A3B8',
+    color: '#8CA0BA',
     fontSize: 13,
     textAlign: 'center',
-    lineHeight: 19,
-    marginBottom: 18,
+    lineHeight: 20,
+    marginBottom: 20,
     maxWidth: 320,
   },
   emptyButton: {
-    backgroundColor: '#2563EB',
-    paddingHorizontal: 18,
-    paddingVertical: 10,
-    borderRadius: 10,
+    backgroundColor: '#0066FF',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 12,
+    shadowColor: '#0066FF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    borderWidth: 1,
+    borderColor: '#38BDF8',
   },
   emptyButtonText: {
     color: '#FFFFFF',
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '800',
   },
 });

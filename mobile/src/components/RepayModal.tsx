@@ -37,10 +37,10 @@ export const RepayModal: React.FC<RepayModalProps> = ({
           <Text style={styles.message}>
             Are you sure you want to mark the loan of{' '}
             <Text style={styles.highlight}>{formatINR(loan.amount)}</Text> to{' '}
-            <Text style={styles.highlight}>{loan.friendName}</Text> as fully repaid?
+            <Text style={styles.highlight}>{loan.friendName}</Text> as fully settled?
           </Text>
           <Text style={styles.note}>
-            This action will update your lending totals and cannot be undone.
+            This action will update your lending totals in real-time.
           </Text>
 
           <View style={styles.actions}>
@@ -73,44 +73,44 @@ export const RepayModal: React.FC<RepayModalProps> = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: '#00000088',
+    backgroundColor: '#000000DD',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 24,
   },
   card: {
-    backgroundColor: '#1E293B',
-    borderRadius: 20,
-    padding: 24,
+    backgroundColor: '#0A1022',
+    borderRadius: 22,
+    padding: 26,
     width: '100%',
     maxWidth: 420,
-    borderWidth: 1,
-    borderColor: '#334155',
+    borderWidth: 1.5,
+    borderColor: '#182444',
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: '#0066FF',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.35,
-    shadowRadius: 16,
+    shadowRadius: 20,
     elevation: 8,
   },
   iconCircle: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: '#05966920',
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#0066FF20',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#05966950',
+    borderWidth: 1.5,
+    borderColor: '#00D2FF',
   },
   icon: {
-    fontSize: 28,
+    fontSize: 30,
   },
   title: {
     color: '#F8FAFC',
-    fontSize: 20,
-    fontWeight: '700',
+    fontSize: 21,
+    fontWeight: '800',
     marginBottom: 10,
   },
   message: {
@@ -121,8 +121,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   highlight: {
-    color: '#10B981',
-    fontWeight: '700',
+    color: '#00D2FF',
+    fontWeight: '800',
   },
   note: {
     color: '#64748B',
@@ -143,19 +143,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   cancelButton: {
-    backgroundColor: '#334155',
+    backgroundColor: '#0E1730',
+    borderWidth: 1,
+    borderColor: '#1E2C52',
   },
   cancelText: {
-    color: '#94A3B8',
+    color: '#8CA0BA',
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   confirmButton: {
-    backgroundColor: '#059669',
+    backgroundColor: '#0066FF',
+    borderWidth: 1,
+    borderColor: '#38BDF8',
+    shadowColor: '#0066FF',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.5,
+    shadowRadius: 8,
   },
   confirmText: {
     color: '#FFFFFF',
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '800',
   },
 });

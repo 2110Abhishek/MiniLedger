@@ -14,7 +14,6 @@ export const LoanCard: React.FC<LoanCardProps> = ({ loan, onRepay, onViewReceipt
   const isRepaid = loan.isRepaid;
   const isOverdue = loan.isOverdue;
 
-  // Resolve receipt full URL if relative
   const fullReceiptUrl = loan.receiptUrl
     ? loan.receiptUrl.startsWith('http')
       ? loan.receiptUrl
@@ -56,7 +55,7 @@ export const LoanCard: React.FC<LoanCardProps> = ({ loan, onRepay, onViewReceipt
               ) : isOverdue ? (
                 `⚠️ Due was ${formatDate(loan.dueDate)}`
               ) : (
-                `Due on ${formatDate(loan.dueDate)}`
+                `Due: ${formatDate(loan.dueDate)}`
               )}
             </Text>
           </View>
@@ -99,7 +98,7 @@ export const LoanCard: React.FC<LoanCardProps> = ({ loan, onRepay, onViewReceipt
             accessibilityLabel="View receipt image"
           >
             <Image source={{ uri: fullReceiptUrl }} style={styles.receiptThumb} />
-            <Text style={styles.receiptText}>View Receipt 🔍</Text>
+            <Text style={styles.receiptText}>Receipt 🔍</Text>
           </TouchableOpacity>
         ) : (
           <View style={styles.placeholderSpace} />
@@ -107,12 +106,12 @@ export const LoanCard: React.FC<LoanCardProps> = ({ loan, onRepay, onViewReceipt
 
         {!isRepaid && (
           <TouchableOpacity
-            style={styles.repayButton}
+            style={[styles.repayButton, isOverdue ? styles.repayButtonOverdue : styles.repayButtonRegular]}
             onPress={() => onRepay(loan)}
             accessibilityRole="button"
             accessibilityLabel={`Mark loan of ${formatINR(loan.amount)} as repaid`}
           >
-            <Text style={styles.repayButtonText}>Mark as Repaid</Text>
+            <Text style={styles.repayButtonText}>Mark as Repaid ✓</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -122,26 +121,31 @@ export const LoanCard: React.FC<LoanCardProps> = ({ loan, onRepay, onViewReceipt
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#1E293B',
-    borderRadius: 16,
+    backgroundColor: '#0A1022',
+    borderRadius: 18,
     padding: 16,
     marginBottom: 12,
-    borderWidth: 1,
-    borderColor: '#334155',
+    borderWidth: 1.2,
+    borderColor: '#182444',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 3,
   },
   cardOverdue: {
-    borderColor: '#DC2626',
-    borderWidth: 1.5,
-    backgroundColor: '#1E293B',
+    borderColor: '#FF1E56',
+    borderWidth: 1.8,
+    backgroundColor: '#190812',
+    shadowColor: '#FF1E56',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.45,
+    shadowRadius: 10,
+    elevation: 6,
   },
   cardRepaid: {
-    borderColor: '#05966940',
-    backgroundColor: '#0F172A',
+    borderColor: '#0E444B',
+    backgroundColor: '#06161B',
   },
   topRow: {
     flexDirection: 'row',
@@ -157,98 +161,108 @@ const styles = StyleSheet.create({
   avatar: {
     width: 44,
     height: 44,
-    borderRadius: 22,
+    borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
   },
   avatarOutstanding: {
-    backgroundColor: '#2563EB20',
+    backgroundColor: '#0066FF20',
+    borderColor: '#0066FF60',
   },
   avatarRepaid: {
-    backgroundColor: '#05966920',
+    backgroundColor: '#00F5A020',
+    borderColor: '#00F5A060',
   },
   avatarOverdue: {
-    backgroundColor: '#DC262625',
+    backgroundColor: '#FF1E5625',
+    borderColor: '#FF1E5680',
   },
   avatarText: {
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   avatarTextOutstanding: {
-    color: '#60A5FA',
+    color: '#00D2FF',
   },
   avatarTextRepaid: {
-    color: '#34D399',
+    color: '#00F5A0',
   },
   avatarTextOverdue: {
-    color: '#F87171',
+    color: '#FF1E56',
   },
   friendName: {
     color: '#F8FAFC',
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: '800',
+    letterSpacing: -0.2,
   },
   dateText: {
-    color: '#94A3B8',
+    color: '#8CA0BA',
     fontSize: 12,
-    marginTop: 2,
+    marginTop: 3,
+    fontWeight: '500',
   },
   amountContainer: {
     alignItems: 'flex-end',
   },
   amount: {
-    fontSize: 18,
-    fontWeight: '800',
+    fontSize: 19,
+    fontWeight: '900',
     letterSpacing: -0.5,
   },
   amountOutstanding: {
-    color: '#F8FAFC',
+    color: '#00D2FF',
   },
   amountRepaid: {
-    color: '#10B981',
+    color: '#00F5A0',
   },
   amountOverdue: {
-    color: '#EF4444',
+    color: '#FF1E56',
+    textShadowColor: '#FF1E5660',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 8,
   },
   statusBadge: {
     paddingHorizontal: 8,
     paddingVertical: 3,
-    borderRadius: 8,
-    marginTop: 4,
+    borderRadius: 6,
+    marginTop: 5,
   },
   statusOutstanding: {
-    backgroundColor: '#1E3A8A40',
+    backgroundColor: '#0066FF20',
     borderWidth: 1,
-    borderColor: '#2563EB50',
+    borderColor: '#0066FF70',
   },
   statusRepaid: {
-    backgroundColor: '#064E3B40',
+    backgroundColor: '#00F5A020',
     borderWidth: 1,
-    borderColor: '#05966950',
+    borderColor: '#00F5A070',
   },
   statusOverdue: {
-    backgroundColor: '#7F1D1D40',
-    borderWidth: 1,
-    borderColor: '#DC2626',
+    backgroundColor: '#FF1E5630',
+    borderWidth: 1.2,
+    borderColor: '#FF1E56',
   },
   statusText: {
-    fontSize: 11,
-    fontWeight: '700',
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.3,
   },
   statusTextOutstanding: {
-    color: '#93C5FD',
+    color: '#38BDF8',
   },
   statusTextRepaid: {
-    color: '#6EE7B7',
+    color: '#00F5A0',
   },
   statusTextOverdue: {
-    color: '#FCA5A5',
+    color: '#FFFFFF',
   },
   bottomRow: {
     marginTop: 14,
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: '#33415550',
+    borderTopColor: '#1A233D',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -260,35 +274,45 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    backgroundColor: '#33415540',
+    backgroundColor: '#0F1A36',
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#1E3A8A',
   },
   receiptThumb: {
-    width: 24,
-    height: 24,
+    width: 22,
+    height: 22,
     borderRadius: 4,
   },
   receiptText: {
-    color: '#94A3B8',
+    color: '#93C5FD',
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   repayButton: {
-    backgroundColor: '#059669',
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
     paddingVertical: 8,
-    borderRadius: 8,
-    shadowColor: '#059669',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 2,
+    borderRadius: 10,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  repayButtonRegular: {
+    backgroundColor: '#0066FF',
+    shadowColor: '#0066FF',
+  },
+  repayButtonOverdue: {
+    backgroundColor: '#0066FF',
+    shadowColor: '#0066FF',
+    borderWidth: 1,
+    borderColor: '#38BDF8',
   },
   repayButtonText: {
     color: '#FFFFFF',
     fontSize: 13,
-    fontWeight: '700',
+    fontWeight: '800',
   },
 });

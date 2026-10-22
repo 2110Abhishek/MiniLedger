@@ -15,7 +15,9 @@ export const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
           <Text style={styles.logoIcon}>₹</Text>
         </View>
         <View>
-          <Text style={styles.brandTitle}>MiniLedger</Text>
+          <Text style={styles.brandTitle}>
+            Mini<Text style={styles.brandHighlight}>Ledger</Text>
+          </Text>
           <Text style={styles.brandSubtitle}>Personal Lending Tracker</Text>
         </View>
       </View>
@@ -23,6 +25,7 @@ export const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
       {user && (
         <View style={styles.userContainer}>
           <View style={styles.phoneBadge}>
+            <Text style={styles.phoneIcon}>📱</Text>
             <Text style={styles.phoneText}>{user.phoneNumber}</Text>
           </View>
           <TouchableOpacity
@@ -41,15 +44,15 @@ export const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#0F172A',
+    backgroundColor: '#070B18',
     paddingHorizontal: 20,
-    paddingTop: 48,
+    paddingTop: 46,
     paddingBottom: 18,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
-    borderBottomColor: '#1E293B',
+    borderBottomColor: '#1A233D',
   },
   brandContainer: {
     flexDirection: 'row',
@@ -57,28 +60,33 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   logoBadge: {
-    width: 40,
-    height: 40,
+    width: 42,
+    height: 42,
     borderRadius: 12,
-    backgroundColor: '#2563EB',
+    backgroundColor: '#0066FF',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#2563EB',
+    shadowColor: '#0066FF',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 6,
-    elevation: 4,
+    shadowOpacity: 0.6,
+    shadowRadius: 10,
+    elevation: 6,
+    borderWidth: 1,
+    borderColor: '#38BDF8',
   },
   logoIcon: {
     color: '#FFFFFF',
-    fontSize: 22,
-    fontWeight: '800',
+    fontSize: 24,
+    fontWeight: '900',
   },
   brandTitle: {
     color: '#F8FAFC',
-    fontSize: 20,
-    fontWeight: '700',
-    letterSpacing: -0.3,
+    fontSize: 21,
+    fontWeight: '800',
+    letterSpacing: -0.4,
+  },
+  brandHighlight: {
+    color: '#00D2FF',
   },
   brandSubtitle: {
     color: '#94A3B8',
@@ -91,29 +99,40 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   phoneBadge: {
-    backgroundColor: '#1E293B',
+    backgroundColor: '#0B132B',
     paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingVertical: 6,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#334155',
+    borderColor: '#1E3A8A',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+  phoneIcon: {
+    fontSize: 11,
   },
   phoneText: {
-    color: '#CBD5E1',
+    color: '#93C5FD',
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   logoutButton: {
     paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingVertical: 7,
     borderRadius: 8,
-    backgroundColor: '#DC262615',
+    backgroundColor: '#FF1E5615',
     borderWidth: 1,
-    borderColor: '#DC262640',
+    borderColor: '#FF1E56',
+    shadowColor: '#FF1E56',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
   },
   logoutText: {
-    color: '#EF4444',
+    color: '#FF1E56',
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: 0.3,
   },
 });

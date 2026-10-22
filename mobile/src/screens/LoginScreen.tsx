@@ -25,7 +25,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onOtpSent }) => {
     setErrorMessage(null);
     const cleanNumber = phoneNumber.trim().replace(/[\s\-()]/g, '');
 
-    // Validation
     if (!cleanNumber) {
       setErrorMessage('Please enter your mobile phone number');
       return;
@@ -66,7 +65,9 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onOtpSent }) => {
             <Text style={styles.logoText}>₹</Text>
           </View>
 
-          <Text style={styles.title}>MiniLedger</Text>
+          <Text style={styles.title}>
+            Mini<Text style={styles.titleHighlight}>Ledger</Text>
+          </Text>
           <Text style={styles.subtitle}>
             Personal lending tracker for friends and family
           </Text>
@@ -82,7 +83,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onOtpSent }) => {
               <TextInput
                 style={styles.input}
                 placeholder="98765 43210"
-                placeholderTextColor="#64748B"
+                placeholderTextColor="#475569"
                 keyboardType="phone-pad"
                 value={phoneNumber}
                 onChangeText={(text) => {
@@ -135,7 +136,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ onOtpSent }) => {
 const styles = StyleSheet.create({
   keyboardContainer: {
     flex: 1,
-    backgroundColor: '#090D16',
+    backgroundColor: '#05070E',
   },
   scrollContent: {
     flexGrow: 1,
@@ -144,48 +145,53 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   card: {
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0A1022',
     borderRadius: 24,
-    padding: 28,
+    padding: 30,
     width: '100%',
     maxWidth: 440,
-    borderWidth: 1,
-    borderColor: '#1E293B',
+    borderWidth: 1.2,
+    borderColor: '#182444',
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.35,
-    shadowRadius: 20,
+    shadowOpacity: 0.5,
+    shadowRadius: 24,
     elevation: 8,
   },
   logoBadge: {
-    width: 64,
-    height: 64,
-    borderRadius: 20,
-    backgroundColor: '#2563EB',
+    width: 68,
+    height: 68,
+    borderRadius: 22,
+    backgroundColor: '#0066FF',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
-    shadowColor: '#2563EB',
+    shadowColor: '#0066FF',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
+    shadowOpacity: 0.6,
+    shadowRadius: 14,
     elevation: 6,
+    borderWidth: 1.5,
+    borderColor: '#38BDF8',
   },
   logoText: {
     color: '#FFFFFF',
-    fontSize: 34,
-    fontWeight: '800',
+    fontSize: 36,
+    fontWeight: '900',
   },
   title: {
     color: '#F8FAFC',
-    fontSize: 26,
-    fontWeight: '800',
+    fontSize: 27,
+    fontWeight: '900',
     letterSpacing: -0.5,
     marginBottom: 6,
   },
+  titleHighlight: {
+    color: '#00D2FF',
+  },
   subtitle: {
-    color: '#94A3B8',
+    color: '#8CA0BA',
     fontSize: 14,
     textAlign: 'center',
     marginBottom: 28,
@@ -196,21 +202,21 @@ const styles = StyleSheet.create({
   label: {
     color: '#CBD5E1',
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '700',
     marginBottom: 8,
   },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1E293B',
+    backgroundColor: '#060B18',
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#334155',
+    borderWidth: 1.2,
+    borderColor: '#1E2C52',
     overflow: 'hidden',
-    height: 52,
+    height: 54,
   },
   inputRowError: {
-    borderColor: '#EF4444',
+    borderColor: '#FF1E56',
   },
   countryCodeBadge: {
     flexDirection: 'row',
@@ -218,8 +224,8 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingHorizontal: 14,
     borderRightWidth: 1,
-    borderRightColor: '#334155',
-    backgroundColor: '#1E293B',
+    borderRightColor: '#1E2C52',
+    backgroundColor: '#060B18',
     height: '100%',
   },
   flag: {
@@ -228,13 +234,13 @@ const styles = StyleSheet.create({
   countryCode: {
     color: '#F8FAFC',
     fontSize: 15,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   input: {
     flex: 1,
-    color: '#F8FAFC',
-    fontSize: 16,
-    fontWeight: '600',
+    color: '#00D2FF',
+    fontSize: 17,
+    fontWeight: '700',
     paddingHorizontal: 14,
     height: '100%',
   },
@@ -242,30 +248,32 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   errorText: {
-    color: '#EF4444',
+    color: '#FF1E56',
     fontSize: 13,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   submitButton: {
-    backgroundColor: '#2563EB',
+    backgroundColor: '#0066FF',
     borderRadius: 12,
-    height: 52,
+    height: 54,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 20,
-    shadowColor: '#2563EB',
+    shadowColor: '#0066FF',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
     elevation: 4,
+    borderWidth: 1,
+    borderColor: '#38BDF8',
   },
   submitButtonDisabled: {
     opacity: 0.7,
   },
   submitButtonText: {
     color: '#FFFFFF',
-    fontSize: 15,
-    fontWeight: '700',
+    fontSize: 16,
+    fontWeight: '800',
   },
   loadingRow: {
     flexDirection: 'row',
@@ -274,21 +282,21 @@ const styles = StyleSheet.create({
   },
   infoBox: {
     marginTop: 24,
-    backgroundColor: '#1E293B80',
+    backgroundColor: '#060B18',
     borderRadius: 12,
     padding: 14,
     borderWidth: 1,
-    borderColor: '#334155',
+    borderColor: '#1E2C52',
   },
   infoBoxTitle: {
-    color: '#60A5FA',
+    color: '#00D2FF',
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '800',
     marginBottom: 4,
   },
   infoBoxText: {
-    color: '#94A3B8',
+    color: '#8CA0BA',
     fontSize: 12,
-    lineHeight: 17,
+    lineHeight: 18,
   },
 });

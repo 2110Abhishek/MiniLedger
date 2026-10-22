@@ -9,7 +9,6 @@ import {
   ScrollView,
   Image,
   Alert,
-  Platform,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { createLoan, uploadReceiptImage } from '../services/loans';
@@ -23,8 +22,7 @@ interface AddLoanScreenProps {
 export const AddLoanScreen: React.FC<AddLoanScreenProps> = ({ onSuccess, onCancel }) => {
   const [friendName, setFriendName] = useState('');
   const [amount, setAmount] = useState('');
-  
-  // Default to 14 days from today
+
   const defaultDueDate = () => {
     const d = new Date();
     d.setDate(d.getDate() + 14);
@@ -46,7 +44,6 @@ export const AddLoanScreen: React.FC<AddLoanScreenProps> = ({ onSuccess, onCance
   };
 
   const setPastOverdueDate = () => {
-    // 7 days ago -> immediately overdue
     const d = new Date();
     d.setDate(d.getDate() - 7);
     setDueDate(d.toISOString().split('T')[0]);
@@ -158,7 +155,7 @@ export const AddLoanScreen: React.FC<AddLoanScreenProps> = ({ onSuccess, onCance
           <TextInput
             style={[styles.input, errors.friendName ? styles.inputError : null]}
             placeholder="e.g. Rahul Sharma"
-            placeholderTextColor="#64748B"
+            placeholderTextColor="#475569"
             value={friendName}
             onChangeText={(text) => {
               setFriendName(text);
@@ -183,7 +180,7 @@ export const AddLoanScreen: React.FC<AddLoanScreenProps> = ({ onSuccess, onCance
             <TextInput
               style={styles.amountInput}
               placeholder="5000.00"
-              placeholderTextColor="#64748B"
+              placeholderTextColor="#475569"
               keyboardType="decimal-pad"
               value={amount}
               onChangeText={(text) => {
@@ -205,7 +202,7 @@ export const AddLoanScreen: React.FC<AddLoanScreenProps> = ({ onSuccess, onCance
           <TextInput
             style={[styles.input, errors.dueDate ? styles.inputError : null]}
             placeholder="YYYY-MM-DD"
-            placeholderTextColor="#64748B"
+            placeholderTextColor="#475569"
             value={dueDate}
             onChangeText={(text) => {
               setDueDate(text);
@@ -241,19 +238,19 @@ export const AddLoanScreen: React.FC<AddLoanScreenProps> = ({ onSuccess, onCance
               style={[styles.presetButton, styles.presetOverdueButton]}
               onPress={setPastOverdueDate}
             >
-              <Text style={styles.presetOverdueText}>-7 Days (Overdue)</Text>
+              <Text style={styles.presetOverdueText}>⚠️ -7 Days (Overdue)</Text>
             </TouchableOpacity>
           </View>
         </View>
 
-        {/* Receipt Photo Upload (Optional Bonus) */}
+        {/* Receipt Photo Upload */}
         <View style={styles.field}>
           <Text style={styles.label}>Attach Receipt / Agreement (Optional)</Text>
           {receiptUri ? (
             <View style={styles.receiptPreviewContainer}>
               <Image source={{ uri: receiptUri }} style={styles.receiptPreviewImage} />
               <View style={styles.receiptActions}>
-                <Text style={styles.receiptAttachedText}>✓ Receipt photo attached</Text>
+                <Text style={styles.receiptAttachedText}>✓ Photo attached</Text>
                 <TouchableOpacity
                   style={styles.removeReceiptButton}
                   onPress={() => setReceiptUri(null)}
@@ -286,7 +283,7 @@ export const AddLoanScreen: React.FC<AddLoanScreenProps> = ({ onSuccess, onCance
           {loading ? (
             <View style={styles.loadingRow}>
               <ActivityIndicator color="#FFFFFF" size="small" />
-              <Text style={styles.submitButtonText}>Saving Loan...</Text>
+              <Text style={styles.submitButtonText}>Saving Entry...</Text>
             </View>
           ) : (
             <Text style={styles.submitButtonText}>Save Loan Entry ✓</Text>
@@ -300,22 +297,22 @@ export const AddLoanScreen: React.FC<AddLoanScreenProps> = ({ onSuccess, onCance
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: '#090D16',
+    backgroundColor: '#05070E',
     padding: 16,
     justifyContent: 'center',
     alignItems: 'center',
   },
   card: {
-    backgroundColor: '#0F172A',
+    backgroundColor: '#0A1022',
     borderRadius: 24,
     padding: 24,
     width: '100%',
     maxWidth: 500,
-    borderWidth: 1,
-    borderColor: '#1E293B',
+    borderWidth: 1.2,
+    borderColor: '#182444',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.35,
+    shadowOpacity: 0.4,
     shadowRadius: 16,
     elevation: 8,
   },
@@ -330,17 +327,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   backButtonText: {
-    color: '#60A5FA',
+    color: '#00D2FF',
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   title: {
     color: '#F8FAFC',
     fontSize: 20,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   subtitle: {
-    color: '#94A3B8',
+    color: '#8CA0BA',
     fontSize: 13,
     marginBottom: 24,
     textAlign: 'center',
@@ -351,65 +348,67 @@ const styles = StyleSheet.create({
   label: {
     color: '#CBD5E1',
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '700',
     marginBottom: 8,
   },
   required: {
-    color: '#EF4444',
+    color: '#FF1E56',
   },
   input: {
-    backgroundColor: '#1E293B',
+    backgroundColor: '#060B18',
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#334155',
+    borderWidth: 1.2,
+    borderColor: '#1E2C52',
     color: '#F8FAFC',
     fontSize: 15,
+    fontWeight: '600',
     paddingHorizontal: 14,
     paddingVertical: 12,
   },
   amountRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1E293B',
+    backgroundColor: '#060B18',
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#334155',
+    borderWidth: 1.2,
+    borderColor: '#1E2C52',
     overflow: 'hidden',
   },
   currencyBadge: {
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#334155',
+    backgroundColor: '#0066FF',
     borderRightWidth: 1,
-    borderRightColor: '#475569',
+    borderRightColor: '#38BDF8',
   },
   currencySymbol: {
-    color: '#F8FAFC',
+    color: '#FFFFFF',
     fontSize: 18,
-    fontWeight: '800',
+    fontWeight: '900',
   },
   amountInput: {
     flex: 1,
-    color: '#F8FAFC',
+    color: '#00D2FF',
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: '800',
     paddingHorizontal: 14,
     paddingVertical: 10,
   },
   inputError: {
-    borderColor: '#EF4444',
+    borderColor: '#FF1E56',
   },
   errorText: {
-    color: '#EF4444',
+    color: '#FF1E56',
     fontSize: 12,
     marginTop: 6,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   presetsLabel: {
     color: '#64748B',
     fontSize: 11,
     marginTop: 8,
     marginBottom: 6,
+    fontWeight: '600',
   },
   presetRow: {
     flexDirection: 'row',
@@ -417,32 +416,36 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   presetButton: {
-    backgroundColor: '#1E293B',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    backgroundColor: '#0E1730',
+    paddingHorizontal: 11,
+    paddingVertical: 7,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#334155',
+    borderColor: '#1E3A8A',
   },
   presetText: {
-    color: '#94A3B8',
+    color: '#93C5FD',
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   presetOverdueButton: {
-    borderColor: '#DC262650',
-    backgroundColor: '#7F1D1D20',
+    borderColor: '#FF1E56',
+    backgroundColor: '#260814',
+    shadowColor: '#FF1E56',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 6,
   },
   presetOverdueText: {
-    color: '#F87171',
+    color: '#FF6B8B',
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '800',
   },
   uploadButton: {
-    backgroundColor: '#1E293B',
+    backgroundColor: '#060B18',
     borderRadius: 12,
     borderWidth: 1.5,
-    borderColor: '#334155',
+    borderColor: '#1E3A8A',
     borderStyle: 'dashed',
     paddingVertical: 18,
     alignItems: 'center',
@@ -453,18 +456,18 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   uploadText: {
-    color: '#94A3B8',
+    color: '#93C5FD',
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   receiptPreviewContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#1E293B',
+    backgroundColor: '#060B18',
     borderRadius: 12,
     padding: 10,
     borderWidth: 1,
-    borderColor: '#334155',
+    borderColor: '#1E3A8A',
     gap: 12,
   },
   receiptPreviewImage: {
@@ -479,33 +482,37 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   receiptAttachedText: {
-    color: '#10B981',
+    color: '#00F5A0',
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '700',
   },
   removeReceiptButton: {
     paddingHorizontal: 10,
     paddingVertical: 6,
-    backgroundColor: '#DC262620',
+    backgroundColor: '#FF1E5625',
+    borderWidth: 1,
+    borderColor: '#FF1E56',
     borderRadius: 6,
   },
   removeReceiptText: {
-    color: '#EF4444',
+    color: '#FF1E56',
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '800',
   },
   submitButton: {
-    backgroundColor: '#2563EB',
+    backgroundColor: '#0066FF',
     borderRadius: 12,
     height: 52,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 10,
-    shadowColor: '#2563EB',
+    shadowColor: '#0066FF',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 8,
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
     elevation: 4,
+    borderWidth: 1,
+    borderColor: '#38BDF8',
   },
   submitButtonDisabled: {
     opacity: 0.7,
@@ -513,7 +520,7 @@ const styles = StyleSheet.create({
   submitButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: '800',
   },
   loadingRow: {
     flexDirection: 'row',
