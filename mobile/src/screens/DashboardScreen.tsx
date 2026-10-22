@@ -24,7 +24,9 @@ interface DashboardScreenProps {
 export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAddLoan }) => {
   const { width } = useWindowDimensions();
   const isCompact = width < 520;
+  const isUltraWide = width >= 1300;
   const isWide = width >= 768;
+  const horizontalPadding = width >= 1024 ? 40 : width >= 768 ? 28 : 16;
 
   const [summary, setSummary] = useState<Summary | null>(null);
   const [loans, setLoans] = useState<Loan[]>([]);
@@ -79,11 +81,17 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAd
     }
   };
 
+  const getLoanItemStyle = () => {
+    if (isUltraWide) return styles.loanGridItem3Col;
+    if (isWide) return styles.loanGridItem2Col;
+    return styles.loanItem1Col;
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { paddingHorizontal: horizontalPadding }]}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -192,11 +200,11 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAd
             </View>
           )}
 
-          {/* Loans List (Responsive grid on tablet/desktop) */}
+          {/* Loans List (Responsive grid: 3-col on ultrawide, 2-col on desktop/tablet, 1-col on mobile) */}
           {!loading && loans.length > 0 && (
-            <View style={[styles.loansList, isWide && styles.loansListGrid]}>
+            <View style={[styles.loansList, (isWide || isUltraWide) && styles.loansListGrid]}>
               {loans.map((loan) => (
-                <View key={loan.id} style={isWide ? styles.loanGridItem : styles.loanItem}>
+                <View key={loan.id} style={getLoanItemStyle()}>
                   <LoanCard
                     loan={loan}
                     onRepay={(target) => setSelectedRepayLoan(target)}
@@ -267,14 +275,11 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     width: '100%',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingTop: 16,
+    paddingTop: 20,
     paddingBottom: 48,
   },
   contentWrapper: {
     width: '100%',
-    maxWidth: 1080,
   },
   topBanner: {
     flexDirection: 'row',
@@ -295,7 +300,7 @@ const styles = StyleSheet.create({
   },
   greetingTitle: {
     color: '#F8FAFC',
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: '900',
     letterSpacing: -0.5,
   },
@@ -306,8 +311,8 @@ const styles = StyleSheet.create({
   },
   addLoanButton: {
     backgroundColor: '#0066FF',
-    paddingHorizontal: 20,
-    paddingVertical: 11,
+    paddingHorizontal: 22,
+    paddingVertical: 12,
     borderRadius: 12,
     shadowColor: '#0066FF',
     shadowOffset: { width: 0, height: 4 },
@@ -324,7 +329,7 @@ const styles = StyleSheet.create({
   },
   addLoanButtonText: {
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '800',
   },
   errorBanner: {
@@ -358,14 +363,14 @@ const styles = StyleSheet.create({
   filterRow: {
     flexDirection: 'row',
     gap: 8,
-    marginVertical: 14,
+    marginVertical: 16,
     flexWrap: 'wrap',
     width: '100%',
   },
   filterPill: {
     backgroundColor: '#0A1022',
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 9,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: '#182444',
@@ -422,13 +427,19 @@ const styles = StyleSheet.create({
   loansListGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 14,
-  },
-  loanItem: {
+    gap: 16,
     width: '100%',
   },
-  loanGridItem: {
-    width: '49%',
+  loanItem1Col: {
+    width: '100%',
+  },
+  loanGridItem2Col: {
+    flexBasis: '49%',
+    flexGrow: 1,
+  },
+  loanGridItem3Col: {
+    flexBasis: '32.3%',
+    flexGrow: 1,
   },
   centerBox: {
     padding: 40,
@@ -445,7 +456,7 @@ const styles = StyleSheet.create({
   emptyState: {
     backgroundColor: '#0A1022',
     borderRadius: 20,
-    padding: 36,
+    padding: 40,
     alignItems: 'center',
     borderWidth: 1.2,
     borderColor: '#182444',
@@ -453,12 +464,12 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   emptyIcon: {
-    fontSize: 44,
+    fontSize: 48,
     marginBottom: 14,
   },
   emptyTitle: {
     color: '#F8FAFC',
-    fontSize: 18,
+    fontSize: 19,
     fontWeight: '800',
     marginBottom: 6,
   },
@@ -468,11 +479,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: 20,
-    maxWidth: 340,
+    maxWidth: 360,
   },
   emptyButton: {
     backgroundColor: '#0066FF',
-    paddingHorizontal: 20,
+    paddingHorizontal: 22,
     paddingVertical: 12,
     borderRadius: 12,
     shadowColor: '#0066FF',

@@ -10,10 +10,11 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
   const { width } = useWindowDimensions();
   const isSmall = width < 480;
+  const horizontalPadding = width >= 1024 ? 40 : width >= 768 ? 28 : 16;
 
   return (
     <View style={styles.outerContainer}>
-      <View style={styles.innerContainer}>
+      <View style={[styles.innerContainer, { paddingHorizontal: horizontalPadding }]}>
         <View style={styles.brandContainer}>
           <View style={styles.logoBadge}>
             <Text style={styles.logoIcon}>₹</Text>
@@ -57,14 +58,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#070B18',
     borderBottomWidth: 1,
     borderBottomColor: '#1A233D',
-    alignItems: 'center',
     paddingTop: 16,
     paddingBottom: 16,
   },
   innerContainer: {
     width: '100%',
-    maxWidth: 1080,
-    paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -75,9 +73,9 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   logoBadge: {
-    width: 42,
-    height: 42,
-    borderRadius: 12,
+    width: 44,
+    height: 44,
+    borderRadius: 14,
     backgroundColor: '#0066FF',
     alignItems: 'center',
     justifyContent: 'center',
@@ -96,8 +94,8 @@ const styles = StyleSheet.create({
   },
   brandTitle: {
     color: '#F8FAFC',
-    fontSize: 21,
-    fontWeight: '800',
+    fontSize: 22,
+    fontWeight: '900',
     letterSpacing: -0.4,
   },
   brandHighlight: {
@@ -111,33 +109,33 @@ const styles = StyleSheet.create({
   userContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: 12,
   },
   phoneBadge: {
     backgroundColor: '#0B132B',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: '#1E3A8A',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5,
+    gap: 6,
   },
   phoneIcon: {
-    fontSize: 11,
+    fontSize: 12,
   },
   phoneText: {
     color: '#93C5FD',
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '700',
   },
   logoutButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 7,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
     borderRadius: 8,
     backgroundColor: '#FF1E5615',
-    borderWidth: 1,
+    borderWidth: 1.2,
     borderColor: '#FF1E56',
     shadowColor: '#FF1E56',
     shadowOffset: { width: 0, height: 2 },
@@ -147,7 +145,7 @@ const styles = StyleSheet.create({
   logoutText: {
     color: '#FF1E56',
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '800',
     letterSpacing: 0.3,
   },
 });
