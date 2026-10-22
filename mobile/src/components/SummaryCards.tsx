@@ -17,51 +17,54 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
 
   const hasOverdue = summary ? parseFloat(summary.overdueAmount) > 0 : false;
 
-  // Responsive layout: 4 columns on desktop/wide tablet, 2 columns on normal mobile/tablet, 1 on tiny screens
-  const getCardBasis = () => {
-    if (width >= 860) return '23.5%';
-    if (width >= 400) return '48%';
-    return '100%';
-  };
-
-  const cardStyle = { flexBasis: getCardBasis() as any };
+  // Responsive column calculation
+  // Desktop (> 860px): 4 cards in 1 row (flexBasis: '23.5%')
+  // Tablet / Phone (<= 860px): 2 cards per row (flexBasis: '48%')
+  // Small phone (< 340px): 1 card per row (flexBasis: '100%')
+  const cardBasis = width > 860 ? '23.5%' : width < 340 ? '100%' : '48%';
 
   return (
     <View style={styles.grid}>
       {/* 1. Total Lent (Electric Blue theme) */}
-      <View style={[styles.card, styles.cardLent, cardStyle]}>
+      <View style={[styles.card, styles.cardLent, { flexBasis: cardBasis }]}>
         <View style={styles.cardHeader}>
-          <Text style={styles.cardLabel}>Total Lent</Text>
+          <Text style={styles.cardLabel} numberOfLines={1}>Total Lent</Text>
           <View style={styles.pillLent}>
             <Text style={styles.pillTextLent}>ALL TIME</Text>
           </View>
         </View>
-        <Text style={[styles.cardValue, styles.valueLent]}>{totalLent}</Text>
-        <Text style={styles.cardSub}>Principal sum of loans</Text>
+        <Text style={[styles.cardValue, styles.valueLent]} numberOfLines={1} adjustsFontSizeToFit>
+          {totalLent}
+        </Text>
+        <Text style={styles.cardSub} numberOfLines={1}>Principal sum of loans</Text>
       </View>
 
       {/* 2. Total Repaid (Cyan / Mint theme) */}
-      <View style={[styles.card, styles.cardRepaid, cardStyle]}>
+      <View style={[styles.card, styles.cardRepaid, { flexBasis: cardBasis }]}>
         <View style={styles.cardHeader}>
-          <Text style={styles.cardLabel}>Total Repaid</Text>
+          <Text style={styles.cardLabel} numberOfLines={1}>Total Repaid</Text>
           <View style={styles.pillRepaid}>
             <Text style={styles.pillTextRepaid}>RECEIVED</Text>
           </View>
         </View>
-        <Text style={[styles.cardValue, styles.valueRepaid]}>{totalRepaid}</Text>
-        <Text style={styles.cardSub}>Fully settled balances</Text>
+        <Text style={[styles.cardValue, styles.valueRepaid]} numberOfLines={1} adjustsFontSizeToFit>
+          {totalRepaid}
+        </Text>
+        <Text style={styles.cardSub} numberOfLines={1}>Fully settled balances</Text>
       </View>
 
       {/* 3. Outstanding Amount (Vibrant Sky Blue theme) */}
-      <View style={[styles.card, styles.cardOutstanding, cardStyle]}>
+      <View style={[styles.card, styles.cardOutstanding, { flexBasis: cardBasis }]}>
         <View style={styles.cardHeader}>
-          <Text style={styles.cardLabel}>Outstanding</Text>
+          <Text style={styles.cardLabel} numberOfLines={1}>Outstanding</Text>
           <View style={styles.pillOutstanding}>
             <Text style={styles.pillTextOutstanding}>ACTIVE</Text>
           </View>
         </View>
-        <Text style={[styles.cardValue, styles.valueOutstanding]}>{outstandingAmount}</Text>
-        <Text style={styles.cardSub}>Unsettled remaining</Text>
+        <Text style={[styles.cardValue, styles.valueOutstanding]} numberOfLines={1} adjustsFontSizeToFit>
+          {outstandingAmount}
+        </Text>
+        <Text style={styles.cardSub} numberOfLines={1}>Unsettled remaining</Text>
       </View>
 
       {/* 4. Overdue Amount (Vibrant Glowing NEON RED theme) */}
@@ -69,12 +72,12 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
         style={[
           styles.card,
           styles.cardOverdue,
-          cardStyle,
           hasOverdue && styles.cardOverdueNeonActive,
+          { flexBasis: cardBasis },
         ]}
       >
         <View style={styles.cardHeader}>
-          <Text style={[styles.cardLabel, hasOverdue && styles.cardLabelNeon]}>
+          <Text style={[styles.cardLabel, hasOverdue && styles.cardLabelNeon]} numberOfLines={1}>
             Overdue Amount
           </Text>
           <View
@@ -88,6 +91,7 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
                 styles.pillText,
                 hasOverdue ? styles.pillTextNeonActive : styles.pillTextNeonInactive,
               ]}
+              numberOfLines={1}
             >
               {hasOverdue ? '⚠️ OVERDUE' : '✓ CLEAR'}
             </Text>
@@ -98,10 +102,12 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
             styles.cardValue,
             hasOverdue ? styles.valueNeonRedActive : styles.valueNeonRedInactive,
           ]}
+          numberOfLines={1}
+          adjustsFontSizeToFit
         >
           {overdueAmount}
         </Text>
-        <Text style={[styles.cardSub, hasOverdue && styles.cardSubNeon]}>
+        <Text style={[styles.cardSub, hasOverdue && styles.cardSubNeon]} numberOfLines={1}>
           {hasOverdue ? 'Action needed: Past due' : 'No past-due payments'}
         </Text>
       </View>
@@ -111,15 +117,15 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
 
 const styles = StyleSheet.create({
   grid: {
+    width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 12,
-    marginVertical: 16,
-    width: '100%',
+    marginVertical: 14,
   },
   card: {
     flexGrow: 1,
-    borderRadius: 18,
+    borderRadius: 16,
     padding: 16,
     borderWidth: 1,
     shadowColor: '#000',
@@ -127,12 +133,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 4,
+    minWidth: 140,
   },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 8,
+    gap: 6,
   },
   cardLabel: {
     fontSize: 12,
@@ -140,6 +148,7 @@ const styles = StyleSheet.create({
     color: '#8CA0BA',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
+    flexShrink: 1,
   },
   cardLabelNeon: {
     color: '#FF6B8B',
@@ -158,9 +167,10 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   pill: {
-    paddingHorizontal: 8,
+    paddingHorizontal: 7,
     paddingVertical: 3,
     borderRadius: 6,
+    flexShrink: 0,
   },
   pillText: {
     fontSize: 10,
@@ -183,6 +193,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     borderWidth: 1,
     borderColor: '#0066FF60',
+    flexShrink: 0,
   },
   pillTextLent: {
     color: '#38BDF8',
@@ -205,6 +216,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     borderWidth: 1,
     borderColor: '#00F5A060',
+    flexShrink: 0,
   },
   pillTextRepaid: {
     color: '#00F5A0',
@@ -228,6 +240,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     borderWidth: 1,
     borderColor: '#00D2FF70',
+    flexShrink: 0,
   },
   pillTextOutstanding: {
     color: '#00D2FF',

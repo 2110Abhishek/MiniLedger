@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   ActivityIndicator,
   Text,
+  Platform,
 } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { User, Loan } from './src/types';
@@ -15,6 +16,27 @@ import { LoginScreen } from './src/screens/LoginScreen';
 import { OtpScreen } from './src/screens/OtpScreen';
 import { DashboardScreen } from './src/screens/DashboardScreen';
 import { AddLoanScreen } from './src/screens/AddLoanScreen';
+
+// Ensure body/html/root are completely dark on web with zero white margins
+if (Platform.OS === 'web' && typeof document !== 'undefined') {
+  const existingStyle = document.getElementById('miniledger-web-reset');
+  if (!existingStyle) {
+    const style = document.createElement('style');
+    style.id = 'miniledger-web-reset';
+    style.textContent = `
+      html, body, #root {
+        background-color: #05070E !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        min-height: 100vh !important;
+        height: 100% !important;
+        overflow-x: hidden !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+}
 
 export default function App() {
   const [initializing, setInitializing] = useState(true);
@@ -109,24 +131,18 @@ export default function App() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    width: '100%',
     backgroundColor: '#05070E',
   },
   mainContainer: {
     flex: 1,
-    width: '100%',
     backgroundColor: '#05070E',
   },
   authContainer: {
     flex: 1,
-    width: '100%',
     backgroundColor: '#05070E',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   centerContainer: {
     flex: 1,
-    width: '100%',
     backgroundColor: '#05070E',
     justifyContent: 'center',
     alignItems: 'center',

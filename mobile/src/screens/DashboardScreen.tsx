@@ -23,11 +23,6 @@ interface DashboardScreenProps {
 
 export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAddLoan }) => {
   const { width } = useWindowDimensions();
-  const isCompact = width < 520;
-  const isUltraWide = width >= 1300;
-  const isWide = width >= 768;
-  const horizontalPadding = width >= 1024 ? 40 : width >= 768 ? 28 : 16;
-
   const [summary, setSummary] = useState<Summary | null>(null);
   const [loans, setLoans] = useState<Loan[]>([]);
   const [filter, setFilter] = useState<'all' | LoanStatus>('all');
@@ -81,17 +76,11 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAd
     }
   };
 
-  const getLoanItemStyle = () => {
-    if (isUltraWide) return styles.loanGridItem3Col;
-    if (isWide) return styles.loanGridItem2Col;
-    return styles.loanItem1Col;
-  };
-
   return (
     <View style={styles.container}>
       <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={[styles.scrollContent, { paddingHorizontal: horizontalPadding }]}
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -101,16 +90,18 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAd
         }
       >
         <View style={styles.contentWrapper}>
-          {/* Top Greeting & Action Banner (Responsive Flex) */}
-          <View style={[styles.topBanner, isCompact && styles.topBannerCompact]}>
-            <View style={styles.titleArea}>
-              <Text style={styles.greetingTitle}>Lending Overview</Text>
-              <Text style={styles.greetingSubtitle}>
+          {/* Top Greeting & Action Banner */}
+          <View style={styles.topBanner}>
+            <View style={styles.greetingContainer}>
+              <Text style={styles.greetingTitle} numberOfLines={1}>
+                Lending Overview
+              </Text>
+              <Text style={styles.greetingSubtitle} numberOfLines={2}>
                 Monitor active balances, settled loans & past-due amounts
               </Text>
             </View>
             <TouchableOpacity
-              style={[styles.addLoanButton, isCompact && styles.addLoanButtonFull]}
+              style={styles.addLoanButton}
               onPress={onOpenAddLoan}
               accessibilityRole="button"
               accessibilityLabel="Add new loan entry"
@@ -132,64 +123,70 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAd
           {/* Summary Cards */}
           <SummaryCards summary={summary} loading={loading} />
 
-          {/* Filter Tabs */}
-          <View style={styles.filterRow}>
-            <TouchableOpacity
-              style={[styles.filterPill, filter === 'all' && styles.filterPillActiveAll]}
-              onPress={() => setFilter('all')}
+          {/* Filter Tabs (Horizontal Scrollable for Small Screens) */}
+          <View style={styles.filterContainer}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.filterScroll}
             >
-              <Text style={[styles.filterPillText, filter === 'all' && styles.filterPillTextActive]}>
-                All Loans
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.filterPill, filter === 'outstanding' && styles.filterPillActiveOutstanding]}
-              onPress={() => setFilter('outstanding')}
-            >
-              <Text
-                style={[
-                  styles.filterPillText,
-                  filter === 'outstanding' && styles.filterPillTextActive,
-                ]}
+              <TouchableOpacity
+                style={[styles.filterPill, filter === 'all' && styles.filterPillActiveAll]}
+                onPress={() => setFilter('all')}
               >
-                Outstanding
-              </Text>
-            </TouchableOpacity>
+                <Text style={[styles.filterPillText, filter === 'all' && styles.filterPillTextActive]}>
+                  All Loans
+                </Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[
-                styles.filterPill,
-                filter === 'overdue' && styles.filterPillActiveNeonOverdue,
-              ]}
-              onPress={() => setFilter('overdue')}
-            >
-              <Text
-                style={[
-                  styles.filterPillText,
-                  filter === 'overdue' && styles.filterPillTextActiveNeon,
-                ]}
+              <TouchableOpacity
+                style={[styles.filterPill, filter === 'outstanding' && styles.filterPillActiveOutstanding]}
+                onPress={() => setFilter('outstanding')}
               >
-                ⚠️ Overdue
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={[
+                    styles.filterPillText,
+                    filter === 'outstanding' && styles.filterPillTextActive,
+                  ]}
+                >
+                  Outstanding
+                </Text>
+              </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[
-                styles.filterPill,
-                filter === 'repaid' && styles.filterPillActiveRepaid,
-              ]}
-              onPress={() => setFilter('repaid')}
-            >
-              <Text
+              <TouchableOpacity
                 style={[
-                  styles.filterPillText,
-                  filter === 'repaid' && styles.filterPillTextActiveRepaid,
+                  styles.filterPill,
+                  filter === 'overdue' && styles.filterPillActiveNeonOverdue,
                 ]}
+                onPress={() => setFilter('overdue')}
               >
-                ✓ Repaid
-              </Text>
-            </TouchableOpacity>
+                <Text
+                  style={[
+                    styles.filterPillText,
+                    filter === 'overdue' && styles.filterPillTextActiveNeon,
+                  ]}
+                >
+                  ⚠️ Overdue
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.filterPill,
+                  filter === 'repaid' && styles.filterPillActiveRepaid,
+                ]}
+                onPress={() => setFilter('repaid')}
+              >
+                <Text
+                  style={[
+                    styles.filterPillText,
+                    filter === 'repaid' && styles.filterPillTextActiveRepaid,
+                  ]}
+                >
+                  ✓ Repaid
+                </Text>
+              </TouchableOpacity>
+            </ScrollView>
           </View>
 
           {/* Loading Indicator */}
@@ -200,17 +197,16 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAd
             </View>
           )}
 
-          {/* Loans List (Responsive grid: 3-col on ultrawide, 2-col on desktop/tablet, 1-col on mobile) */}
+          {/* Loans List */}
           {!loading && loans.length > 0 && (
-            <View style={[styles.loansList, (isWide || isUltraWide) && styles.loansListGrid]}>
+            <View style={styles.loansList}>
               {loans.map((loan) => (
-                <View key={loan.id} style={getLoanItemStyle()}>
-                  <LoanCard
-                    loan={loan}
-                    onRepay={(target) => setSelectedRepayLoan(target)}
-                    onViewReceipt={(url, target) => setPreviewReceipt({ url, loan: target })}
-                  />
-                </View>
+                <LoanCard
+                  key={loan.id}
+                  loan={loan}
+                  onRepay={(target) => setSelectedRepayLoan(target)}
+                  onViewReceipt={(url, target) => setPreviewReceipt({ url, loan: target })}
+                />
               ))}
             </View>
           )}
@@ -268,39 +264,34 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#05070E',
   },
-  scrollView: {
-    flex: 1,
-    width: '100%',
-  },
   scrollContent: {
     flexGrow: 1,
     width: '100%',
-    paddingTop: 20,
-    paddingBottom: 48,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 40,
   },
   contentWrapper: {
     width: '100%',
+    maxWidth: 1040,
+    alignSelf: 'center',
   },
   topBanner: {
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
-    marginTop: 4,
-    width: '100%',
-    gap: 16,
-  },
-  topBannerCompact: {
-    flexDirection: 'column',
-    alignItems: 'flex-start',
     gap: 12,
+    marginBottom: 4,
+    marginTop: 4,
   },
-  titleArea: {
+  greetingContainer: {
     flex: 1,
+    minWidth: 0,
   },
   greetingTitle: {
     color: '#F8FAFC',
-    fontSize: 26,
+    fontSize: 22,
     fontWeight: '900',
     letterSpacing: -0.5,
   },
@@ -308,11 +299,13 @@ const styles = StyleSheet.create({
     color: '#8CA0BA',
     fontSize: 13,
     marginTop: 3,
+    lineHeight: 18,
   },
   addLoanButton: {
+    flexShrink: 0,
     backgroundColor: '#0066FF',
-    paddingHorizontal: 22,
-    paddingVertical: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
     borderRadius: 12,
     shadowColor: '#0066FF',
     shadowOffset: { width: 0, height: 4 },
@@ -321,15 +314,10 @@ const styles = StyleSheet.create({
     elevation: 5,
     borderWidth: 1,
     borderColor: '#38BDF8',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  addLoanButtonFull: {
-    width: '100%',
   },
   addLoanButtonText: {
     color: '#FFFFFF',
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '800',
   },
   errorBanner: {
@@ -346,7 +334,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.4,
     shadowRadius: 8,
-    width: '100%',
   },
   errorBannerText: {
     color: '#FF6B8B',
@@ -360,17 +347,19 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     marginLeft: 12,
   },
-  filterRow: {
+  filterContainer: {
+    width: '100%',
+    marginVertical: 12,
+  },
+  filterScroll: {
     flexDirection: 'row',
     gap: 8,
-    marginVertical: 16,
-    flexWrap: 'wrap',
-    width: '100%',
+    paddingVertical: 4,
   },
   filterPill: {
     backgroundColor: '#0A1022',
-    paddingHorizontal: 16,
-    paddingVertical: 9,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: '#182444',
@@ -421,31 +410,13 @@ const styles = StyleSheet.create({
     fontWeight: '900',
   },
   loansList: {
-    marginTop: 6,
     width: '100%',
-  },
-  loansListGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16,
-    width: '100%',
-  },
-  loanItem1Col: {
-    width: '100%',
-  },
-  loanGridItem2Col: {
-    flexBasis: '49%',
-    flexGrow: 1,
-  },
-  loanGridItem3Col: {
-    flexBasis: '32.3%',
-    flexGrow: 1,
+    marginTop: 4,
   },
   centerBox: {
     padding: 40,
     alignItems: 'center',
     justifyContent: 'center',
-    width: '100%',
   },
   loadingText: {
     color: '#00D2FF',
@@ -456,20 +427,19 @@ const styles = StyleSheet.create({
   emptyState: {
     backgroundColor: '#0A1022',
     borderRadius: 20,
-    padding: 40,
+    padding: 36,
     alignItems: 'center',
     borderWidth: 1.2,
     borderColor: '#182444',
     marginTop: 12,
-    width: '100%',
   },
   emptyIcon: {
-    fontSize: 48,
+    fontSize: 44,
     marginBottom: 14,
   },
   emptyTitle: {
     color: '#F8FAFC',
-    fontSize: 19,
+    fontSize: 18,
     fontWeight: '800',
     marginBottom: 6,
   },
@@ -479,11 +449,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: 20,
-    maxWidth: 360,
+    maxWidth: 320,
   },
   emptyButton: {
     backgroundColor: '#0066FF',
-    paddingHorizontal: 22,
+    paddingHorizontal: 20,
     paddingVertical: 12,
     borderRadius: 12,
     shadowColor: '#0066FF',

@@ -187,10 +187,12 @@ export const OtpScreen: React.FC<OtpScreenProps> = ({ phoneNumber, onSuccess, on
 const styles = StyleSheet.create({
   keyboardContainer: {
     flex: 1,
+    width: '100%',
     backgroundColor: '#05070E',
   },
   scrollContent: {
     flexGrow: 1,
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,

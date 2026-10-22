@@ -9,21 +9,20 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
   const { width } = useWindowDimensions();
-  const isSmall = width < 480;
-  const horizontalPadding = width >= 1024 ? 40 : width >= 768 ? 28 : 16;
+  const isSmallScreen = width < 520;
 
   return (
-    <View style={styles.outerContainer}>
-      <View style={[styles.innerContainer, { paddingHorizontal: horizontalPadding }]}>
+    <View style={styles.outerWrapper}>
+      <View style={styles.container}>
         <View style={styles.brandContainer}>
           <View style={styles.logoBadge}>
             <Text style={styles.logoIcon}>₹</Text>
           </View>
-          <View>
+          <View style={styles.brandTextWrapper}>
             <Text style={styles.brandTitle}>
               Mini<Text style={styles.brandHighlight}>Ledger</Text>
             </Text>
-            {!isSmall && (
+            {!isSmallScreen && (
               <Text style={styles.brandSubtitle}>Personal Lending Tracker</Text>
             )}
           </View>
@@ -34,7 +33,9 @@ export const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
             <View style={styles.phoneBadge}>
               <Text style={styles.phoneIcon}>📱</Text>
               <Text style={styles.phoneText}>
-                {isSmall ? user.phoneNumber.slice(-4) : user.phoneNumber}
+                {isSmallScreen && user.phoneNumber.length >= 10
+                  ? `...${user.phoneNumber.slice(-5)}`
+                  : user.phoneNumber}
               </Text>
             </View>
             <TouchableOpacity
@@ -53,29 +54,34 @@ export const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
 };
 
 const styles = StyleSheet.create({
-  outerContainer: {
+  outerWrapper: {
     width: '100%',
     backgroundColor: '#070B18',
     borderBottomWidth: 1,
     borderBottomColor: '#1A233D',
-    paddingTop: 16,
-    paddingBottom: 16,
   },
-  innerContainer: {
+  container: {
     width: '100%',
+    maxWidth: 1040,
+    alignSelf: 'center',
+    paddingHorizontal: 16,
+    paddingTop: 18,
+    paddingBottom: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    gap: 8,
   },
   brandContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 10,
+    flexShrink: 1,
   },
   logoBadge: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
+    width: 38,
+    height: 38,
+    borderRadius: 10,
     backgroundColor: '#0066FF',
     alignItems: 'center',
     justifyContent: 'center',
@@ -89,13 +95,17 @@ const styles = StyleSheet.create({
   },
   logoIcon: {
     color: '#FFFFFF',
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '900',
+  },
+  brandTextWrapper: {
+    minWidth: 0,
+    flexShrink: 1,
   },
   brandTitle: {
     color: '#F8FAFC',
-    fontSize: 22,
-    fontWeight: '900',
+    fontSize: 19,
+    fontWeight: '800',
     letterSpacing: -0.4,
   },
   brandHighlight: {
@@ -103,39 +113,40 @@ const styles = StyleSheet.create({
   },
   brandSubtitle: {
     color: '#94A3B8',
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '500',
   },
   userContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 8,
+    flexShrink: 0,
   },
   phoneBadge: {
     backgroundColor: '#0B132B',
-    paddingHorizontal: 12,
-    paddingVertical: 7,
-    borderRadius: 20,
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 14,
     borderWidth: 1,
     borderColor: '#1E3A8A',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 4,
   },
   phoneIcon: {
-    fontSize: 12,
+    fontSize: 11,
   },
   phoneText: {
     color: '#93C5FD',
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: '700',
   },
   logoutButton: {
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
     borderRadius: 8,
     backgroundColor: '#FF1E5615',
-    borderWidth: 1.2,
+    borderWidth: 1,
     borderColor: '#FF1E56',
     shadowColor: '#FF1E56',
     shadowOffset: { width: 0, height: 2 },
@@ -144,8 +155,8 @@ const styles = StyleSheet.create({
   },
   logoutText: {
     color: '#FF1E56',
-    fontSize: 12,
-    fontWeight: '800',
+    fontSize: 11,
+    fontWeight: '700',
     letterSpacing: 0.3,
   },
 });

@@ -121,6 +121,7 @@ export const LoanCard: React.FC<LoanCardProps> = ({ loan, onRepay, onViewReceipt
 
 const styles = StyleSheet.create({
   card: {
+    width: '100%',
     backgroundColor: '#0A1022',
     borderRadius: 18,
     padding: 16,
@@ -151,12 +152,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
+    gap: 8,
   },
   friendInfo: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
     flex: 1,
+    minWidth: 0,
   },
   avatar: {
     width: 44,
