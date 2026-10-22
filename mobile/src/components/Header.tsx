@@ -62,15 +62,15 @@ const styles = StyleSheet.create({
   },
   container: {
     width: '100%',
-    maxWidth: 1040,
+    maxWidth: 1280,
     alignSelf: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: 24,
     paddingTop: 18,
     paddingBottom: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: 8,
+    gap: 12,
   },
   brandContainer: {
     flexDirection: 'row',

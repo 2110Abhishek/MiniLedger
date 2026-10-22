@@ -17,23 +17,23 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
 
   const hasOverdue = summary ? parseFloat(summary.overdueAmount) > 0 : false;
 
-  // Responsive column calculation
-  // Desktop (> 860px): 4 cards in 1 row (flexBasis: '23.5%')
-  // Tablet / Phone (<= 860px): 2 cards per row (flexBasis: '48%')
-  // Small phone (< 340px): 1 card per row (flexBasis: '100%')
-  const cardBasis = width > 860 ? '23.5%' : width < 340 ? '100%' : '48%';
+  // Exact desktop & tablet 2x2 grid layout matching the user's preferred design
+  // Screens >= 540px: 2 cards per row (flexBasis: '48.6%')
+  // Screens < 540px: 1 card per row for mobile readability
+  const isCompactMobile = width < 540;
+  const cardBasis = isCompactMobile ? '100%' : '48.6%';
 
   return (
     <View style={styles.grid}>
       {/* 1. Total Lent (Electric Blue theme) */}
       <View style={[styles.card, styles.cardLent, { flexBasis: cardBasis }]}>
         <View style={styles.cardHeader}>
-          <Text style={styles.cardLabel} numberOfLines={1}>Total Lent</Text>
+          <Text style={styles.cardLabel} numberOfLines={1}>TOTAL LENT</Text>
           <View style={styles.pillLent}>
             <Text style={styles.pillTextLent}>ALL TIME</Text>
           </View>
         </View>
-        <Text style={[styles.cardValue, styles.valueLent]} numberOfLines={1} adjustsFontSizeToFit>
+        <Text style={[styles.cardValue, styles.valueLent]} numberOfLines={1}>
           {totalLent}
         </Text>
         <Text style={styles.cardSub} numberOfLines={1}>Principal sum of loans</Text>
@@ -42,12 +42,12 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
       {/* 2. Total Repaid (Cyan / Mint theme) */}
       <View style={[styles.card, styles.cardRepaid, { flexBasis: cardBasis }]}>
         <View style={styles.cardHeader}>
-          <Text style={styles.cardLabel} numberOfLines={1}>Total Repaid</Text>
+          <Text style={styles.cardLabel} numberOfLines={1}>TOTAL REPAID</Text>
           <View style={styles.pillRepaid}>
             <Text style={styles.pillTextRepaid}>RECEIVED</Text>
           </View>
         </View>
-        <Text style={[styles.cardValue, styles.valueRepaid]} numberOfLines={1} adjustsFontSizeToFit>
+        <Text style={[styles.cardValue, styles.valueRepaid]} numberOfLines={1}>
           {totalRepaid}
         </Text>
         <Text style={styles.cardSub} numberOfLines={1}>Fully settled balances</Text>
@@ -56,12 +56,12 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
       {/* 3. Outstanding Amount (Vibrant Sky Blue theme) */}
       <View style={[styles.card, styles.cardOutstanding, { flexBasis: cardBasis }]}>
         <View style={styles.cardHeader}>
-          <Text style={styles.cardLabel} numberOfLines={1}>Outstanding</Text>
+          <Text style={styles.cardLabel} numberOfLines={1}>OUTSTANDING</Text>
           <View style={styles.pillOutstanding}>
             <Text style={styles.pillTextOutstanding}>ACTIVE</Text>
           </View>
         </View>
-        <Text style={[styles.cardValue, styles.valueOutstanding]} numberOfLines={1} adjustsFontSizeToFit>
+        <Text style={[styles.cardValue, styles.valueOutstanding]} numberOfLines={1}>
           {outstandingAmount}
         </Text>
         <Text style={styles.cardSub} numberOfLines={1}>Unsettled remaining</Text>
@@ -78,7 +78,7 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
       >
         <View style={styles.cardHeader}>
           <Text style={[styles.cardLabel, hasOverdue && styles.cardLabelNeon]} numberOfLines={1}>
-            Overdue Amount
+            OVERDUE AMOUNT
           </Text>
           <View
             style={[
@@ -103,7 +103,6 @@ export const SummaryCards: React.FC<SummaryCardsProps> = ({ summary }) => {
             hasOverdue ? styles.valueNeonRedActive : styles.valueNeonRedInactive,
           ]}
           numberOfLines={1}
-          adjustsFontSizeToFit
         >
           {overdueAmount}
         </Text>
@@ -120,54 +119,56 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
-    marginVertical: 14,
+    gap: 16,
+    marginVertical: 18,
+    justifyContent: 'space-between',
   },
   card: {
     flexGrow: 1,
-    borderRadius: 16,
-    padding: 16,
-    borderWidth: 1,
+    borderRadius: 18,
+    padding: 20,
+    borderWidth: 1.2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
     elevation: 4,
-    minWidth: 140,
+    minHeight: 120,
+    justifyContent: 'space-between',
   },
   cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
-    gap: 6,
+    marginBottom: 10,
+    gap: 8,
   },
   cardLabel: {
     fontSize: 12,
-    fontWeight: '700',
+    fontWeight: '800',
     color: '#8CA0BA',
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    letterSpacing: 0.8,
     flexShrink: 1,
   },
   cardLabelNeon: {
     color: '#FF6B8B',
   },
   cardValue: {
-    fontSize: 22,
+    fontSize: 28,
     fontWeight: '900',
     color: '#F8FAFC',
-    marginVertical: 2,
+    marginVertical: 4,
     letterSpacing: -0.5,
   },
   cardSub: {
-    fontSize: 11,
+    fontSize: 12,
     color: '#64748B',
-    marginTop: 3,
+    marginTop: 4,
     fontWeight: '500',
   },
   pill: {
-    paddingHorizontal: 7,
+    paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 6,
     flexShrink: 0,
@@ -188,8 +189,8 @@ const styles = StyleSheet.create({
   },
   pillLent: {
     backgroundColor: '#0066FF20',
-    paddingHorizontal: 7,
-    paddingVertical: 3,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
     borderRadius: 6,
     borderWidth: 1,
     borderColor: '#0066FF60',
@@ -211,8 +212,8 @@ const styles = StyleSheet.create({
   },
   pillRepaid: {
     backgroundColor: '#00F5A020',
-    paddingHorizontal: 7,
-    paddingVertical: 3,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
     borderRadius: 6,
     borderWidth: 1,
     borderColor: '#00F5A060',
@@ -228,15 +229,15 @@ const styles = StyleSheet.create({
   cardOutstanding: {
     backgroundColor: '#0A1535',
     borderColor: '#0284C7',
-    borderWidth: 1.2,
+    borderWidth: 1.5,
   },
   valueOutstanding: {
     color: '#00D2FF',
   },
   pillOutstanding: {
     backgroundColor: '#00D2FF20',
-    paddingHorizontal: 7,
-    paddingVertical: 3,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
     borderRadius: 6,
     borderWidth: 1,
     borderColor: '#00D2FF70',

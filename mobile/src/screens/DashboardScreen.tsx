@@ -76,10 +76,15 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAd
     }
   };
 
+  const horizontalPadding = width >= 768 ? 24 : 16;
+
   return (
     <View style={styles.container}>
       <ScrollView
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingHorizontal: horizontalPadding },
+        ]}
         keyboardShouldPersistTaps="handled"
         refreshControl={
           <RefreshControl
@@ -93,10 +98,10 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAd
           {/* Top Greeting & Action Banner */}
           <View style={styles.topBanner}>
             <View style={styles.greetingContainer}>
-              <Text style={styles.greetingTitle} numberOfLines={1}>
+              <Text style={styles.greetingTitle}>
                 Lending Overview
               </Text>
-              <Text style={styles.greetingSubtitle} numberOfLines={2}>
+              <Text style={styles.greetingSubtitle}>
                 Monitor active balances, settled loans & past-due amounts
               </Text>
             </View>
@@ -123,13 +128,9 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAd
           {/* Summary Cards */}
           <SummaryCards summary={summary} loading={loading} />
 
-          {/* Filter Tabs (Horizontal Scrollable for Small Screens) */}
+          {/* Filter Tabs */}
           <View style={styles.filterContainer}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.filterScroll}
-            >
+            <View style={styles.filterScroll}>
               <TouchableOpacity
                 style={[styles.filterPill, filter === 'all' && styles.filterPillActiveAll]}
                 onPress={() => setFilter('all')}
@@ -186,7 +187,7 @@ export const DashboardScreen: React.FC<DashboardScreenProps> = ({ user, onOpenAd
                   ✓ Repaid
                 </Text>
               </TouchableOpacity>
-            </ScrollView>
+            </View>
           </View>
 
           {/* Loading Indicator */}
@@ -267,13 +268,12 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     width: '100%',
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 40,
+    paddingTop: 28,
+    paddingBottom: 50,
   },
   contentWrapper: {
     width: '100%',
-    maxWidth: 1040,
+    maxWidth: 1280,
     alignSelf: 'center',
   },
   topBanner: {
@@ -281,9 +281,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    gap: 12,
-    marginBottom: 4,
-    marginTop: 4,
+    gap: 16,
+    marginBottom: 8,
+    paddingTop: 4,
+    paddingBottom: 6,
   },
   greetingContainer: {
     flex: 1,
@@ -291,21 +292,23 @@ const styles = StyleSheet.create({
   },
   greetingTitle: {
     color: '#F8FAFC',
-    fontSize: 22,
+    fontSize: 26,
     fontWeight: '900',
     letterSpacing: -0.5,
+    lineHeight: 32,
+    marginBottom: 4,
   },
   greetingSubtitle: {
     color: '#8CA0BA',
-    fontSize: 13,
-    marginTop: 3,
-    lineHeight: 18,
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: '500',
   },
   addLoanButton: {
     flexShrink: 0,
     backgroundColor: '#0066FF',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
     borderRadius: 12,
     shadowColor: '#0066FF',
     shadowOffset: { width: 0, height: 4 },
@@ -317,7 +320,7 @@ const styles = StyleSheet.create({
   },
   addLoanButtonText: {
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '800',
   },
   errorBanner: {
@@ -349,17 +352,17 @@ const styles = StyleSheet.create({
   },
   filterContainer: {
     width: '100%',
-    marginVertical: 12,
+    marginVertical: 14,
   },
   filterScroll: {
     flexDirection: 'row',
-    gap: 8,
-    paddingVertical: 4,
+    flexWrap: 'wrap',
+    gap: 10,
   },
   filterPill: {
     backgroundColor: '#0A1022',
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 9,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: '#182444',
@@ -411,7 +414,7 @@ const styles = StyleSheet.create({
   },
   loansList: {
     width: '100%',
-    marginTop: 4,
+    marginTop: 6,
   },
   centerBox: {
     padding: 40,
@@ -427,33 +430,33 @@ const styles = StyleSheet.create({
   emptyState: {
     backgroundColor: '#0A1022',
     borderRadius: 20,
-    padding: 36,
+    padding: 40,
     alignItems: 'center',
     borderWidth: 1.2,
     borderColor: '#182444',
-    marginTop: 12,
+    marginTop: 16,
   },
   emptyIcon: {
-    fontSize: 44,
-    marginBottom: 14,
+    fontSize: 48,
+    marginBottom: 16,
   },
   emptyTitle: {
     color: '#F8FAFC',
-    fontSize: 18,
+    fontSize: 19,
     fontWeight: '800',
     marginBottom: 6,
   },
   emptyText: {
     color: '#8CA0BA',
-    fontSize: 13,
+    fontSize: 14,
     textAlign: 'center',
-    lineHeight: 20,
-    marginBottom: 20,
-    maxWidth: 320,
+    lineHeight: 22,
+    marginBottom: 22,
+    maxWidth: 360,
   },
   emptyButton: {
     backgroundColor: '#0066FF',
-    paddingHorizontal: 20,
+    paddingHorizontal: 22,
     paddingVertical: 12,
     borderRadius: 12,
     shadowColor: '#0066FF',
@@ -465,7 +468,7 @@ const styles = StyleSheet.create({
   },
   emptyButtonText: {
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '800',
   },
 });
